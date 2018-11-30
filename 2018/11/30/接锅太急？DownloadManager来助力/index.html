@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="">
+    <!-- title -->
+
+
+
+
+<!-- keywords -->
+
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" >
+    <meta name="author" content="John Doe">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="John Doe">
+    
+    <meta name="keywords" content="cqupt,fxymine4ever,冯新耀">
+    
+    <meta name="description" content="">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>接锅太急？DownloadManager来助力 · fxymine4ever&#39;s blog</title>
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+
+</style>
+
+    <link rel="preload" href= "/css/style.css?v=20180824" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <link rel="stylesheet" href= "/css/mobile.css?v=20180824" media="(max-width: 980px)">
+    
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+(function( w ){
+	"use strict";
+	// rel=preload support test
+	if( !w.loadCSS ){
+		w.loadCSS = function(){};
+	}
+	// define on the loadCSS obj
+	var rp = loadCSS.relpreload = {};
+	// rel=preload feature support test
+	// runs once and returns a function for compat purposes
+	rp.support = (function(){
+		var ret;
+		try {
+			ret = w.document.createElement( "link" ).relList.supports( "preload" );
+		} catch (e) {
+			ret = false;
+		}
+		return function(){
+			return ret;
+		};
+	})();
+
+	// if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+	// then change that media back to its intended value on load
+	rp.bindMediaToggle = function( link ){
+		// remember existing media attr for ultimate state, or default to 'all'
+		var finalMedia = link.media || "all";
+
+		function enableStylesheet(){
+			link.media = finalMedia;
+		}
+
+		// bind load handlers to enable media
+		if( link.addEventListener ){
+			link.addEventListener( "load", enableStylesheet );
+		} else if( link.attachEvent ){
+			link.attachEvent( "onload", enableStylesheet );
+		}
+
+		// Set rel and non-applicable media type to start an async request
+		// note: timeout allows this to happen async to let rendering continue in IE
+		setTimeout(function(){
+			link.rel = "stylesheet";
+			link.media = "only x";
+		});
+		// also enable media after 3 seconds,
+		// which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+		setTimeout( enableStylesheet, 3000 );
+	};
+
+	// loop through link elements in DOM
+	rp.poly = function(){
+		// double check this to prevent external calls from running
+		if( rp.support() ){
+			return;
+		}
+		var links = w.document.getElementsByTagName( "link" );
+		for( var i = 0; i < links.length; i++ ){
+			var link = links[ i ];
+			// qualify links to those with rel=preload and as=style attrs
+			if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+				// prevent rerunning on link
+				link.setAttribute( "data-loadcss", true );
+				// bind listeners to toggle media back
+				rp.bindMediaToggle( link );
+			}
+		}
+	};
+
+	// if unsupported, run the polyfill
+	if( !rp.support() ){
+		// run once at least
+		rp.poly();
+
+		// rerun poly on an interval until onload
+		var run = w.setInterval( rp.poly, 500 );
+		if( w.addEventListener ){
+			w.addEventListener( "load", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		} else if( w.attachEvent ){
+			w.attachEvent( "onload", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		}
+	}
+
+
+	// commonjs
+	if( typeof exports !== "undefined" ){
+		exports.loadCSS = loadCSS;
+	}
+	else {
+		w.loadCSS = loadCSS;
+	}
+}( typeof global !== "undefined" ? global : this ) );
+</script>
+
+    <link rel="icon" href= "/avatar/avatar.jpg" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js" as="script" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" as="script" />
+    <link rel="preload" href="/scripts/main.js" as="script" />
+    <link rel="preload" as="font" href="/font/Oswald-Regular.ttf" crossorigin>
+    <link rel="preload" as="font" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" crossorigin>
+    
+    <!-- fancybox -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script>
+    <!-- 百度统计  -->
+    
+    <!-- 谷歌统计  -->
+    
+</head>
+
+    
+        <body class="post-body">
+    
+    
+<header class="header">
+
+    <div class="read-progress"></div>
+    <div class="header-sidebar-menu">&#xe775;</div>
+    <!-- post页的toggle banner  -->
+    
+    <div class="banner">
+            <div class="blog-title">
+                <a href="/" >dev</a>
+            </div>
+            <div class="post-title">
+                <a href="#" class="post-name">接锅太急？DownloadManager来助力</a>
+            </div>
+    </div>
+    
+    <a class="home-link" href=/>dev</a>
+</header>
+    <div class="wrapper">
+        <div class="site-intro" style="
+
+
+
+
+
+
+
+height:50vh;
+">
+    
+    <!-- 主页  -->
+    
+    
+    <!-- 404页  -->
+            
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+            接锅太急？DownloadManager来助力
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+            
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                
+                    <div class="post-intro-read">
+                        <span>字数统计: <span class="post-count word-count">1.7k</span>阅读时长: <span class="post-count reading-time">7 min</span></span>
+                    </div>
+                
+                <div class="post-intro-meta">
+                    <span class="post-intro-calander iconfont-archer">&#xe676;</span>
+                    <span class="post-intro-time">2018/11/30</span>
+                    
+                    <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                        <span class="iconfont-archer">&#xe602;</span>
+                        <span id="busuanzi_value_page_pv"></span>
+                    </span>
+                    
+                    <span class="shareWrapper">
+                        <span class="iconfont-archer shareIcon">&#xe71d;</span>
+                        <span class="shareText">Share</span>
+                        <ul class="shareList">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        
+    </div>
+</div>
+        <script>
+ 
+  // get user agent
+  var browser = {
+    versions: function () {
+      var u = window.navigator.userAgent;
+      return {
+        userAgent: u,
+        trident: u.indexOf('Trident') > -1, //IE内核
+        presto: u.indexOf('Presto') > -1, //opera内核
+        webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+        gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+        mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+        ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+        android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+        iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+        iPad: u.indexOf('iPad') > -1, //是否为iPad
+        webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+        weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+        uc: u.indexOf('UCBrowser') > -1 //是否为android下的UC浏览器
+      };
+    }()
+  }
+  console.log("userAgent:" + browser.versions.userAgent);
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded');
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document.getElementsByClassName('intro-title')[0].classList.add('intro-fade-in');
+      document.getElementsByClassName('intro-subtitle')[0].classList.add('intro-fade-in');
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in');
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb(){
+    if (browser.versions.uc) {
+      console.log("UCBrowser");
+      fontLoaded();
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular']
+        },
+        loading: function () {  //所有字体开始加载
+          // console.log('loading');
+        },
+        active: function () {  //所有字体已渲染
+          fontLoaded();
+        },
+        inactive: function () { //字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout');
+          fontLoaded();
+        },
+        timeout: 5000 // Set the timeout to two seconds
+      });
+    }
+  }
+
+  function asyncErr(){
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document, t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (cb) { o.addEventListener('load', function (e) { cb(null, e); }, false); }
+    if (err) { o.addEventListener('error', function (e) { err(null, e); }, false); }
+    s.parentNode.insertBefore(o, s);
+  }
+
+  var asyncLoadWithFallBack = function(arr, success, reject) {
+      var currReject = function(){
+        reject()
+        arr.shift()
+        if(arr.length)
+          async(arr[0], success, currReject)
+        }
+
+      async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack([
+    "https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js", 
+    "https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js",
+    "/lib/webfontloader.min.js"
+  ], asyncCb, asyncErr)
+</script>        
+        <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+        <div class="container container-unloaded">
+            <main class="main post-page">
+    <article class="article-entry">
+        <h2 id="接锅太急？DownloadManager助你一臂之力"><a href="#接锅太急？DownloadManager助你一臂之力" class="headerlink" title="接锅太急？DownloadManager助你一臂之力"></a>接锅太急？DownloadManager助你一臂之力</h2><p><br></p>
+<blockquote>
+<p>在Android开发中，许多时候都会用到大文件下载功能，例如app更新、缓存视频文件等。这时候，如果我们自己实现下载功能，需要考虑到例如异步、后台下载，自动安装等策略，对于初级Android工程师来说，项目比较赶的时候可能就会影响效率。那么，有没有一个库能够简单粗暴地完成这些任务呢？<br><br><br><br>当然，那就是Google官方的DownloadManager</p>
+</blockquote>
+<h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p><a href="https://developer.android.google.cn/reference/android/app/DownloadManager" target="_blank" rel="noopener">DownloadManager</a></p>
+<p>我们看看官方对于两个主要内部类的介绍:<br></p>
+<table>
+<thead>
+<tr>
+<th>Nested classes</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://developer.android.google.cn/reference/android/app/DownloadManager.Query" target="_blank" rel="noopener">DownloadManager.Query</a></td>
+<td>This class may be used to filter download manager queries. </td>
+</tr>
+<tr>
+<td><a href="https://developer.android.google.cn/reference/android/app/DownloadManager.Request" target="_blank" rel="noopener">DownloadManager.Request</a></td>
+<td>This class contains all the information necessary to request a new download. </td>
+</tr>
+</tbody>
+</table>
+<p>顾名思义DownloadManager.Query主要用于查询下载的信息，DownloadManager.Request主要用于发起一个下载请求（其中可以添加下载的配置，例如Header等信息）</p>
+<h3 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h3><p><strong>1.设置权限</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;uses-permission android:name=&quot;android.permission.INTERNET&quot; /&gt;</span><br><span class="line">&lt;uses-permission android:name=&quot;android.permission.WRITE_EXTERNAL_STORAGE&quot; /&gt;</span><br></pre></td></tr></table></figure></p>
+<p><strong>2. 构造Request对象</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">val url = &quot;http://hongyan.cqupt.edu.cn/app/com.mredrock.cyxbs.apk?version=44.0&quot;//下载地址</span><br><span class="line">val uri: Uri = Uri.parse(url)//转变为Uri</span><br><span class="line">val request:DownloadManager.Request = DownloadManager.Request(uri)//构造request实例</span><br></pre></td></tr></table></figure></p>
+<p><strong>3. 配置Request的信息</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">request.setTitle(&quot;下载任务&quot;)</span><br><span class="line">request.setDescription(&quot;下载掌上重邮app中...&quot;)</span><br><span class="line">request.allowScanningByMediaScanner()</span><br><span class="line">request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI)</span><br><span class="line">request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)</span><br><span class="line">request.setDestinationInExternalFilesDir(this, Environment.DIRECTORY_DOWNLOADS, &quot;cyxbs&quot;)</span><br><span class="line">//...</span><br></pre></td></tr></table></figure></p>
+<p>部分配置:</p>
+<ul>
+<li>addRequestHeader(String header,String value) 添加请求头<br></li>
+<li>allowScanningByMediaScanner() 表示允许MediaScanner扫描到这个文件,默认不允许<br></li>
+<li>setAllowedNetworkTypes(int flags) 设置下载时的网络条件，默认任何网络都可以下载，可选配置：NETWORK_BLUETOOTH、NETWORK_MOBILE、NETWORK_WIFI。<br></li>
+<li>setAllowedOverRoaming(Boolean allowed) 漫游状态下是否可以下载<br></li>
+<li>setNotificationVisibility(int visibility) 设置下载完成或下载时是否发布通知<br></li>
+<li>setTitle(CharSequence):设置Notification的title<br></li>
+<li>setDescription(CharSequence):设置Notification的message<br></li>
+<li>setDestinationInExternalFilesDir 设置路径为应用程序外部文件目录</li>
+<li>setDestinationInExternalPublicDir 设置路径为外部存储目录</li>
+<li>setDestinationUri  设置路径</li>
+<li>setMimeType(String mimeType) 设置MIME内容类型</li>
+</ul>
+<p><strong>4.获取DownloadManager实例</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">val downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager</span><br></pre></td></tr></table></figure></p>
+<p><strong>5.加入下载队列</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">val downloadId = downloadManager.enqueue(request)</span><br></pre></td></tr></table></figure></p>
+<p><strong>6.其他操作</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//remove方法可以用来取消一个准备进行的下载，中止一个正在进行的下载，或者删除一个已经完成的下载。</span><br><span class="line">downloadManager.remove(downloadId)//移除请求队列，取消下载</span><br></pre></td></tr></table></figure></p>
+<h3 id="监听DownloadManager的广播"><a href="#监听DownloadManager的广播" class="headerlink" title="监听DownloadManager的广播"></a>监听DownloadManager的广播</h3><blockquote>
+<p>DownloadManager会在完成时发送一条 <strong>ACTION_DOWNLOAD_COMPLETE</strong> 的广播，这时我们只需要创建一个BroadCastReceiver就能接收到下载完成的信息</p>
+</blockquote>
+<p>创建BroadCastReceiver的子类来接收广播<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">class DownLoadFinishReceiver : BroadcastReceiver()&#123;</span><br><span class="line">        override fun onReceive(context: Context?, intent: Intent?) &#123;</span><br><span class="line">            intent?.let &#123;</span><br><span class="line">                val action = intent.action</span><br><span class="line">                if (action == DownloadManager.ACTION_DOWNLOAD_COMPLETE) &#123;</span><br><span class="line">                    //下载完成操作</span><br><span class="line">                &#125; else if (action == DownloadManager.ACTION_NOTIFICATION_CLICKED) &#123;</span><br><span class="line">                    //点击Notification的操作 例如暂停操作</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>动态注册广播接收器<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">val downLoadFinishReceiver = DownLoadFinishReceiver()</span><br><span class="line">val intentFilter = IntentFilter()</span><br><span class="line">intentFilter.addAction(DownloadManager.ACTION_DOWNLOAD_COMPLETE)</span><br><span class="line">intentFilter.addAction(DownloadManager.ACTION_NOTIFICATION_CLICKED)</span><br><span class="line">registerReceiver(downLoadFinishReceiver, intentFilter)</span><br></pre></td></tr></table></figure></p>
+<p>别忘了在onDestroy里解除<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">override fun onDestroy() &#123;</span><br><span class="line">    super.onDestroy()</span><br><span class="line">    unregisterReceiver(downLoadFinishReceiver)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="Query的使用"><a href="#Query的使用" class="headerlink" title="Query的使用"></a>Query的使用</h3><p>query主要用于查询下载的信息，DownloadManager类中内置了很多的字段可以供Query来查询，例如状态、文件下载路径等。</p>
+<table>
+<thead>
+<tr>
+<th>Public method</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>setFilterById(long… ids)</td>
+<td>仅包括给定id的下载文件</td>
+</tr>
+<tr>
+<td>setFilterByStatus(int flags)</td>
+<td>仅包含状态与给定状态匹配的下载文件</td>
+</tr>
+</tbody>
+</table>
+<p>结合Cursor，我们可以查询到DownloadManager里有的信息，包括下载文件的Uri，下载状态等。具体字段可以进入DownloadManager源码中查看。</p>
+<h4 id="查询下载状态"><a href="#查询下载状态" class="headerlink" title="查询下载状态"></a>查询下载状态</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">private fun queryStatus()&#123;</span><br><span class="line">        val query = DownloadManager.Query().setFilterById(downloadId)</span><br><span class="line">        val cursor = manager.query(query)</span><br><span class="line">        if(cursor!=null)&#123;</span><br><span class="line">            if(cursor.moveToFirst())&#123;</span><br><span class="line">                val status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))</span><br><span class="line">                when(status)&#123;</span><br><span class="line">                    DownloadManager.STATUS_RUNNING-&gt;&#123;</span><br><span class="line">                        //下载中</span><br><span class="line">                    &#125;</span><br><span class="line">                    DownloadManager.STATUS_FAILED-&gt;&#123;</span><br><span class="line">                        //下载失败</span><br><span class="line">                    &#125;</span><br><span class="line">                    DownloadManager.STATUS_PAUSED-&gt;&#123;</span><br><span class="line">                        //下载暂停</span><br><span class="line">                    &#125;</span><br><span class="line">                    DownloadManager.STATUS_PENDING-&gt;&#123;</span><br><span class="line">                        //下载延迟</span><br><span class="line">                    &#125;</span><br><span class="line">                    DownloadManager.STATUS_SUCCESSFUL-&gt;&#123;</span><br><span class="line">                        //下载成功</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        cursor.close()</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h4 id="查询下载的文件的部分信息"><a href="#查询下载的文件的部分信息" class="headerlink" title="查询下载的文件的部分信息"></a>查询下载的文件的部分信息</h4><p>这里DownloadManager封装好了两种查询的方法，其内部都是使用Query+Cursor的组合实现的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">manager.getUriForDownloadedFile(downloadId)</span><br><span class="line">//下载完成的文件的Uri，你可以拿到这个uri去操作他，例如apk安装</span><br><span class="line">manager.getMimeTypeForDownloadedFile(downloadId)</span><br><span class="line">//下载完成的文件的media type</span><br></pre></td></tr></table></figure>
+<p>你也可以查询其他信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">DownloadManager.COLUMN_ID//下载id</span><br><span class="line">DownloadManager.COLUMN_TITLE//下载文件的题目</span><br><span class="line">DownloadManager.COLUMN_LOCAL_URI//下载文件的uri</span><br><span class="line">DownloadManager.COLUMN_STATUS//下载文件的状态</span><br><span class="line">DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR//目前文件的大小</span><br><span class="line">DownloadManager.COLUMN_TOTAL_SIZE_BYTES//文件的总大小</span><br></pre></td></tr></table></figure></p>
+<p>多说一句，若想回调进度，你可以根据上面的  <strong>文件目前大小</strong>/<strong>文件总大小</strong>  来得到，刷新进度可以使用Hanlder+Timer(仅供参考)</p>
+<h3 id="自动安装Apk"><a href="#自动安装Apk" class="headerlink" title="自动安装Apk"></a>自动安装Apk</h3><p>首先列出兼容7.0的方法，因为7.0时引入了”StrictMode Api”政策，禁止向你的应用外公开uri,如果Intent跳转到应用外，则会出现FileUriExposedException，所以说我们要添加一个flag去获得临时授权<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">private fun installApk(downloadId: Long) &#123;</span><br><span class="line">    val uri = manager.getUriForDownloadedFile(downloadId)</span><br><span class="line">    val intent = Intent(Intent.ACTION_VIEW)</span><br><span class="line">    if (uri != null) &#123;</span><br><span class="line">        intent.setDataAndType(uri,&quot;application/vnd.android.package-archive&quot;)</span><br><span class="line">        if ((Build.VERSION.SDK_INT &gt;= 24)) &#123;//版本是否在7.0以上</span><br><span class="line">            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)</span><br><span class="line">            //对目标apk的uri临时授权 使得有权限打开该Uri指向的Apk</span><br><span class="line">        &#125;</span><br><span class="line">        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)</span><br><span class="line"></span><br><span class="line">        if (intent.resolveActivity(packageManager) != null) &#123;</span><br><span class="line">            startActivity(intent)</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            Log.e(&quot;DownloadManager&quot;,&quot;自动安装失败&quot;)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">        Log.e(&quot;DownloadManager&quot;,&quot;下载失败&quot;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>其次，8.0时禁止安装未知来源的apk，直接安装会闪退，所以说我们加入这条权限，就能跳转到一个让用户手动允许安装未知来源的界面。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;uses-permission android:name=&quot;android.permission.REQUEST_INSTALL_PACKAGES&quot;/&gt;</span><br></pre></td></tr></table></figure></p>
+<h3 id="自动更新"><a href="#自动更新" class="headerlink" title="自动更新"></a>自动更新</h3><p>（流程图练手）<br><img src="https://s1.ax1x.com/2018/11/27/FViDyQ.png" alt="image"></p>
+<h3 id="后话"><a href="#后话" class="headerlink" title="后话"></a>后话</h3><p>因为Request要设置的参数比较多，适合Builder模式，所以说大家可以写一个RequsetBuilder来配置Request对象，比较美观，简单修改如下。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">class RequestBuilder &#123;</span><br><span class="line">    private lateinit var request:DownloadManager.Request</span><br><span class="line">    private lateinit var uri: Uri</span><br><span class="line">    private lateinit var context:Context</span><br><span class="line"></span><br><span class="line">    fun with(context: Context):RequestBuilder&#123;</span><br><span class="line">        this.context = context</span><br><span class="line">        return this</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fun downloadUrl(url:String):RequestBuilder&#123;</span><br><span class="line">        this.uri = Uri.parse(url)</span><br><span class="line">        this.request = DownloadManager.Request(uri)</span><br><span class="line">        return this</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    fun setTitle(title: String):RequestBuilder&#123;</span><br><span class="line">        request.setTitle(title)</span><br><span class="line">        return this</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fun setDescription(description: String):RequestBuilder&#123;</span><br><span class="line">        request.setDescription(description)</span><br><span class="line">        return this</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fun allowScanningByMediaScanner():RequestBuilder&#123;</span><br><span class="line">        request.allowScanningByMediaScanner()</span><br><span class="line">        return this</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fun setNetworkType(networkType:Int):RequestBuilder&#123;</span><br><span class="line">        request.setAllowedNetworkTypes(networkType)</span><br><span class="line">        return this</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fun setNotificationVisibility(visibility:Int):RequestBuilder&#123;</span><br><span class="line">        request.setNotificationVisibility(visibility)</span><br><span class="line">        return this</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fun setDefaultDestination(subPath:String):RequestBuilder&#123;</span><br><span class="line">        request.setDestinationInExternalFilesDir(context, Environment.DIRECTORY_DOWNLOADS, subPath)</span><br><span class="line">        return this</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fun build():DownloadManager.Request&#123;</span><br><span class="line">        return request</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>此外，记得缓存downloadId，否则退出界面之后id就丢失了。</p>
+<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>基本内容就这么多了，可能有些地方写得不好，有空也可以自己利用RandomAccessFile+Service自己实现一个简单的支持断点续存的多线程后台下载器。</p>
+
+    </article>
+    <!-- license  -->
+    
+    <!-- paginator  -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+                <div class="nextSlogan">Next Post</div>
+                <a href= "/2018/11/30/View事件体系(二)/" title= "">
+                    <div class="nextTitle">[Untitled Post]</div>
+                </a>
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href= "/2018/10/05/阿里云ubuntu-mysql-jdk-tomcat配置javaweb项目打war包部署/" title= "阿里云ubuntu mysql+jdk+tomcat配置javaweb项目打war包部署">
+                    <div class="prevTitle">阿里云ubuntu mysql+jdk+tomcat配置javaweb项目打war包部署</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- 评论插件 -->
+    <!-- 来必力City版安装代码 -->
+
+<!-- City版安装代码已完成 -->
+    
+    
+    <!-- partial('_partial/comment/changyan') -->
+    <!--PC版-->
+
+
+    
+    
+
+    <!-- 评论 -->
+</main>
+            <!-- profile -->
+            
+        </div>
+        <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+    <div class="social">
+        
+    
+        
+            
+                <a href="mailto:fxymine4ever@foxmail.com" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="https://github.com/fengxinyao1" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+    
+        
+            
+                <span class="iconfont-archer qq" title=qq>
+                  
+                  <img class="profile-qr" src="/assets/qq_2.jpg" />
+                </span>
+            
+        
+    
+        
+    
+        
+            
+                <a href="https://weibo.com/u/1815734862" class="iconfont-archer weibo" target="_blank" title=weibo></a>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+    </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://hexo.io/" target="_blank">Hexo</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- 不蒜子  -->
+    
+    <div class="busuanzi-container">
+    
+     
+    <span id="busuanzi_container_site_pv">PV: <span id="busuanzi_value_site_pv"></span> :)</span>
+    
+    </div>
+    
+</footer>
+    </div>
+    <!-- toc -->
+    
+    <div class="toc-wrapper" style=
+    
+
+
+
+
+
+
+
+top:50vh;
+
+    >
+        <div class="toc-catalog">
+            <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+        </div>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#接锅太急？DownloadManager助你一臂之力"><span class="toc-number">1.</span> <span class="toc-text">接锅太急？DownloadManager助你一臂之力</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#介绍"><span class="toc-number">1.1.</span> <span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#基本使用"><span class="toc-number">1.2.</span> <span class="toc-text">基本使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#监听DownloadManager的广播"><span class="toc-number">1.3.</span> <span class="toc-text">监听DownloadManager的广播</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Query的使用"><span class="toc-number">1.4.</span> <span class="toc-text">Query的使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#查询下载状态"><span class="toc-number">1.4.1.</span> <span class="toc-text">查询下载状态</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#查询下载的文件的部分信息"><span class="toc-number">1.4.2.</span> <span class="toc-text">查询下载的文件的部分信息</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#自动安装Apk"><span class="toc-number">1.5.</span> <span class="toc-text">自动安装Apk</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#自动更新"><span class="toc-number">1.6.</span> <span class="toc-text">自动更新</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#后话"><span class="toc-number">1.7.</span> <span class="toc-text">后话</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#最后"><span class="toc-number">1.8.</span> <span class="toc-text">最后</span></a></li></ol></li></ol>
+    </div>
+    
+    <div class="back-top iconfont-archer">&#xe639;</div>
+    <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+          <div class="sidebar-panel-archives">
+    <!-- 在ejs中将archive按照时间排序 -->
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 5
+        </div>
+        <!-- search  -->
+        
+    </div>
+    
+    <div class="post-archive">
+    
+    
+    
+    
+    <div class="archive-year"> Invalid date </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span><a class="archive-post-title" href= "/2018/11/30/View事件体系(二)/" >[Untitled Post]</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> 2018 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/30</span><a class="archive-post-title" href= "/2018/11/30/接锅太急？DownloadManager来助力/" >接锅太急？DownloadManager来助力</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/05</span><a class="archive-post-title" href= "/2018/10/05/阿里云ubuntu-mysql-jdk-tomcat配置javaweb项目打war包部署/" >阿里云ubuntu mysql+jdk+tomcat配置javaweb项目打war包部署</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/05</span><a class="archive-post-title" href= "/2018/08/05/JVM类加载-笔记/" >JVM类加载-笔记</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/24</span><a class="archive-post-title" href= "/2018/06/24/廖雪峰git笔记/" >廖雪峰git笔记</a>
+        </li>
+    
+    </div>
+  </div>
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+    
+        <span class="sidebar-tag-name" data-tags="Linux"><span class="iconfont-archer">&#xe606;</span>Linux</span>
+    
+        <span class="sidebar-tag-name" data-tags="笔记"><span class="iconfont-archer">&#xe606;</span>笔记</span>
+    
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+    缺失模块。<br/>
+    1、请确保node版本大于6.2<br/>
+    2、在博客根目录（注意不是archer根目录）执行以下命令：<br/>
+    <span style="color: #f75357; font-size: 1rem; line-height: 2rem;">npm i hexo-generator-json-content --save</span><br/>
+    3、在根目录_config.yml里添加配置：
+    <pre style="color: #787878; font-size: 0.6rem;">
+jsonContent:
+  meta: false
+  pages: false
+  posts:
+    title: true
+    date: true
+    path: true
+    text: false
+    raw: false
+    content: false
+    slug: false
+    updated: false
+    comments: false
+    link: false
+    permalink: false
+    excerpt: false
+    categories: true
+    tags: true</pre>
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+    </div>
+</div> 
+    <script>
+    var siteMeta = {
+        root: "/",
+        author: "John Doe"
+    }
+</script>
+    <!-- CDN failover -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+    <script type="text/javascript">
+        if (typeof window.$ === 'undefined')
+        {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/lib/jquery.min.js">\x3C/script>')
+        }
+    </script>
+    <script src="/scripts/main.js"></script>
+    <!-- algolia -->
+    
+    <!-- busuanzi  -->
+    
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    <!-- CNZZ  -->
+    
+    </div>
+    <!-- async load share.js -->
+    
+        <script src="/scripts/share.js" async></script>    
+     
+    </body>
+</html>
+
+
