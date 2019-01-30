@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword" content="">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-person-128.png">
+    <link rel="alternate" type="application/atom+xml" title="Hexo" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        接锅太急？DownloadManager来助力｜undefined
+        
+    </title>
+
+    <link rel="canonical" href="http://yoursite.com/2018/11/27/接锅太急？DownloadManager来助力-1/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/blog-style.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+</head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "true" data-istags="false
+" data-ishome = "false" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    Hexo
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+							
+                        <li>
+                            <a href="/404.html">[404]</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/about/">关于我</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img"
+     src="">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>接锅太急？DownloadManager来助力</h1>
+                    
+                    <span class="meta">
+                         作者 John Doe
+                        <span>
+                          日期 2018-11-27
+                         </span>
+                    </span>
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/tags/#Android框架"
+                           title="Android框架">Android框架</a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            接锅太急？DownloadManager来助力
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <h2 id="接锅太急？DownloadManager助你一臂之力"><a href="#接锅太急？DownloadManager助你一臂之力" class="headerlink" title="接锅太急？DownloadManager助你一臂之力"></a>接锅太急？DownloadManager助你一臂之力</h2><p><br></p>
+<blockquote>
+<p>在Android开发中，许多时候都会用到大文件下载功能，例如app更新、缓存视频文件等。这时候，如果我们自己实现下载功能，需要考虑到例如异步、后台下载，自动安装等策略，对于初级Android工程师来说，项目比较赶的时候可能就会影响效率。那么，有没有一个库能够简单粗暴地完成这些任务呢？<br><br><br><br>当然，那就是Google官方的DownloadManager</p>
+</blockquote>
+<h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p><a href="https://developer.android.google.cn/reference/android/app/DownloadManager" target="_blank" rel="noopener">DownloadManager</a></p>
+<p>我们看看官方对于两个主要内部类的介绍:<br></p>
+<table>
+<thead>
+<tr>
+<th>Nested classes</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://developer.android.google.cn/reference/android/app/DownloadManager.Query" target="_blank" rel="noopener">DownloadManager.Query</a></td>
+<td>This class may be used to filter download manager queries. </td>
+</tr>
+<tr>
+<td><a href="https://developer.android.google.cn/reference/android/app/DownloadManager.Request" target="_blank" rel="noopener">DownloadManager.Request</a></td>
+<td>This class contains all the information necessary to request a new download. </td>
+</tr>
+</tbody>
+</table>
+<p>顾名思义DownloadManager.Query主要用于查询下载的信息，DownloadManager.Request主要用于发起一个下载请求（其中可以添加下载的配置，例如Header等信息）</p>
+<h3 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h3><p><strong>1.设置权限</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;uses-permission android:name=&quot;android.permission.INTERNET&quot; /&gt;</span><br><span class="line">&lt;uses-permission android:name=&quot;android.permission.WRITE_EXTERNAL_STORAGE&quot; /&gt;</span><br></pre></td></tr></table></figure></p>
+<p><strong>2. 构造Request对象</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">val url = &quot;http://hongyan.cqupt.edu.cn/app/com.mredrock.cyxbs.apk?version=44.0&quot;//下载地址</span><br><span class="line">val uri: Uri = Uri.parse(url)//转变为Uri</span><br><span class="line">val request:DownloadManager.Request = DownloadManager.Request(uri)//构造request实例</span><br></pre></td></tr></table></figure></p>
+<p><strong>3. 配置Request的信息</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">request.setTitle(&quot;下载任务&quot;)</span><br><span class="line">request.setDescription(&quot;下载掌上重邮app中...&quot;)</span><br><span class="line">request.allowScanningByMediaScanner()</span><br><span class="line">request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI)</span><br><span class="line">request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)</span><br><span class="line">request.setDestinationInExternalFilesDir(this, Environment.DIRECTORY_DOWNLOADS, &quot;cyxbs&quot;)</span><br><span class="line">//...</span><br></pre></td></tr></table></figure></p>
+<p>部分配置:</p>
+<ul>
+<li>addRequestHeader(String header,String value) 添加请求头<br></li>
+<li>allowScanningByMediaScanner() 表示允许MediaScanner扫描到这个文件,默认不允许<br></li>
+<li>setAllowedNetworkTypes(int flags) 设置下载时的网络条件，默认任何网络都可以下载，可选配置：NETWORK_BLUETOOTH、NETWORK_MOBILE、NETWORK_WIFI。<br></li>
+<li>setAllowedOverRoaming(Boolean allowed) 漫游状态下是否可以下载<br></li>
+<li>setNotificationVisibility(int visibility) 设置下载完成或下载时是否发布通知<br></li>
+<li>setTitle(CharSequence):设置Notification的title<br></li>
+<li>setDescription(CharSequence):设置Notification的message<br></li>
+<li>setDestinationInExternalFilesDir 设置路径为应用程序外部文件目录</li>
+<li>setDestinationInExternalPublicDir 设置路径为外部存储目录</li>
+<li>setDestinationUri  设置路径</li>
+<li>setMimeType(String mimeType) 设置MIME内容类型</li>
+</ul>
+<p><strong>4.获取DownloadManager实例</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">val downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager</span><br></pre></td></tr></table></figure></p>
+<p><strong>5.加入下载队列</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">val downloadId = downloadManager.enqueue(request)</span><br></pre></td></tr></table></figure></p>
+<p><strong>6.其他操作</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//remove方法可以用来取消一个准备进行的下载，中止一个正在进行的下载，或者删除一个已经完成的下载。</span><br><span class="line">downloadManager.remove(downloadId)//移除请求队列，取消下载</span><br></pre></td></tr></table></figure></p>
+<h3 id="监听DownloadManager的广播"><a href="#监听DownloadManager的广播" class="headerlink" title="监听DownloadManager的广播"></a>监听DownloadManager的广播</h3><blockquote>
+<p>DownloadManager会在完成时发送一条 <strong>ACTION_DOWNLOAD_COMPLETE</strong> 的广播，这时我们只需要创建一个BroadCastReceiver就能接收到下载完成的信息</p>
+</blockquote>
+<p>创建BroadCastReceiver的子类来接收广播<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">class DownLoadFinishReceiver : BroadcastReceiver()&#123;</span><br><span class="line">        override fun onReceive(context: Context?, intent: Intent?) &#123;</span><br><span class="line">            intent?.let &#123;</span><br><span class="line">                val action = intent.action</span><br><span class="line">                if (action == DownloadManager.ACTION_DOWNLOAD_COMPLETE) &#123;</span><br><span class="line">                    //下载完成操作</span><br><span class="line">                &#125; else if (action == DownloadManager.ACTION_NOTIFICATION_CLICKED) &#123;</span><br><span class="line">                    //点击Notification的操作 例如暂停操作</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>动态注册广播接收器<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">val downLoadFinishReceiver = DownLoadFinishReceiver()</span><br><span class="line">val intentFilter = IntentFilter()</span><br><span class="line">intentFilter.addAction(DownloadManager.ACTION_DOWNLOAD_COMPLETE)</span><br><span class="line">intentFilter.addAction(DownloadManager.ACTION_NOTIFICATION_CLICKED)</span><br><span class="line">registerReceiver(downLoadFinishReceiver, intentFilter)</span><br></pre></td></tr></table></figure></p>
+<p>别忘了在onDestroy里解除<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">override fun onDestroy() &#123;</span><br><span class="line">    super.onDestroy()</span><br><span class="line">    unregisterReceiver(downLoadFinishReceiver)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="Query的使用"><a href="#Query的使用" class="headerlink" title="Query的使用"></a>Query的使用</h3><p>query主要用于查询下载的信息，DownloadManager类中内置了很多的字段可以供Query来查询，例如状态、文件下载路径等。</p>
+<table>
+<thead>
+<tr>
+<th>Public method</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>setFilterById(long… ids)</td>
+<td>仅包括给定id的下载文件</td>
+</tr>
+<tr>
+<td>setFilterByStatus(int flags)</td>
+<td>仅包含状态与给定状态匹配的下载文件</td>
+</tr>
+</tbody>
+</table>
+<p>结合Cursor，我们可以查询到DownloadManager里有的信息，包括下载文件的Uri，下载状态等。具体字段可以进入DownloadManager源码中查看。</p>
+<h4 id="查询下载状态"><a href="#查询下载状态" class="headerlink" title="查询下载状态"></a>查询下载状态</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">private fun queryStatus()&#123;</span><br><span class="line">        val query = DownloadManager.Query().setFilterById(downloadId)</span><br><span class="line">        val cursor = manager.query(query)</span><br><span class="line">        if(cursor!=null)&#123;</span><br><span class="line">            if(cursor.moveToFirst())&#123;</span><br><span class="line">                val status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))</span><br><span class="line">                when(status)&#123;</span><br><span class="line">                    DownloadManager.STATUS_RUNNING-&gt;&#123;</span><br><span class="line">                        //下载中</span><br><span class="line">                    &#125;</span><br><span class="line">                    DownloadManager.STATUS_FAILED-&gt;&#123;</span><br><span class="line">                        //下载失败</span><br><span class="line">                    &#125;</span><br><span class="line">                    DownloadManager.STATUS_PAUSED-&gt;&#123;</span><br><span class="line">                        //下载暂停</span><br><span class="line">                    &#125;</span><br><span class="line">                    DownloadManager.STATUS_PENDING-&gt;&#123;</span><br><span class="line">                        //下载延迟</span><br><span class="line">                    &#125;</span><br><span class="line">                    DownloadManager.STATUS_SUCCESSFUL-&gt;&#123;</span><br><span class="line">                        //下载成功</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        cursor.close()</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h4 id="查询下载的文件的部分信息"><a href="#查询下载的文件的部分信息" class="headerlink" title="查询下载的文件的部分信息"></a>查询下载的文件的部分信息</h4><p>这里DownloadManager封装好了两种查询的方法，其内部都是使用Query+Cursor的组合实现的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">manager.getUriForDownloadedFile(downloadId)</span><br><span class="line">//下载完成的文件的Uri，你可以拿到这个uri去操作他，例如apk安装</span><br><span class="line">manager.getMimeTypeForDownloadedFile(downloadId)</span><br><span class="line">//下载完成的文件的media type</span><br></pre></td></tr></table></figure>
+<p>你也可以查询其他信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">DownloadManager.COLUMN_ID//下载id</span><br><span class="line">DownloadManager.COLUMN_TITLE//下载文件的题目</span><br><span class="line">DownloadManager.COLUMN_LOCAL_URI//下载文件的uri</span><br><span class="line">DownloadManager.COLUMN_STATUS//下载文件的状态</span><br><span class="line">DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR//目前文件的大小</span><br><span class="line">DownloadManager.COLUMN_TOTAL_SIZE_BYTES//文件的总大小</span><br></pre></td></tr></table></figure></p>
+<p>多说一句，若想回调进度，你可以根据上面的  <strong>文件目前大小</strong>/<strong>文件总大小</strong>  来得到，刷新进度可以使用Hanlder+Timer(仅供参考)</p>
+<h3 id="自动安装Apk"><a href="#自动安装Apk" class="headerlink" title="自动安装Apk"></a>自动安装Apk</h3><p>首先列出兼容7.0的方法，因为7.0时引入了”StrictMode Api”政策，禁止向你的应用外公开uri,如果Intent跳转到应用外，则会出现FileUriExposedException，所以说我们要添加一个flag去获得临时授权<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">private fun installApk(downloadId: Long) &#123;</span><br><span class="line">    val uri = manager.getUriForDownloadedFile(downloadId)</span><br><span class="line">    val intent = Intent(Intent.ACTION_VIEW)</span><br><span class="line">    if (uri != null) &#123;</span><br><span class="line">        intent.setDataAndType(uri,&quot;application/vnd.android.package-archive&quot;)</span><br><span class="line">        if ((Build.VERSION.SDK_INT &gt;= 24)) &#123;//版本是否在7.0以上</span><br><span class="line">            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)</span><br><span class="line">            //对目标apk的uri临时授权 使得有权限打开该Uri指向的Apk</span><br><span class="line">        &#125;</span><br><span class="line">        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)</span><br><span class="line"></span><br><span class="line">        if (intent.resolveActivity(packageManager) != null) &#123;</span><br><span class="line">            startActivity(intent)</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            Log.e(&quot;DownloadManager&quot;,&quot;自动安装失败&quot;)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">        Log.e(&quot;DownloadManager&quot;,&quot;下载失败&quot;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>其次，8.0时禁止安装未知来源的apk，直接安装会闪退，所以说我们加入这条权限，就能跳转到一个让用户手动允许安装未知来源的界面。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;uses-permission android:name=&quot;android.permission.REQUEST_INSTALL_PACKAGES&quot;/&gt;</span><br></pre></td></tr></table></figure></p>
+<h3 id="自动更新"><a href="#自动更新" class="headerlink" title="自动更新"></a>自动更新</h3><p>（流程图练手）<br><img src="https://s1.ax1x.com/2018/11/27/FViDyQ.png" alt="image"></p>
+<h3 id="后话"><a href="#后话" class="headerlink" title="后话"></a>后话</h3><p>因为Request要设置的参数比较多，适合Builder模式，所以说大家可以写一个RequsetBuilder来配置Request对象，比较美观，简单修改如下。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">class RequestBuilder &#123;</span><br><span class="line">    private lateinit var request:DownloadManager.Request</span><br><span class="line">    private lateinit var uri: Uri</span><br><span class="line">    private lateinit var context:Context</span><br><span class="line"></span><br><span class="line">    fun with(context: Context):RequestBuilder&#123;</span><br><span class="line">        this.context = context</span><br><span class="line">        return this</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fun downloadUrl(url:String):RequestBuilder&#123;</span><br><span class="line">        this.uri = Uri.parse(url)</span><br><span class="line">        this.request = DownloadManager.Request(uri)</span><br><span class="line">        return this</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    fun setTitle(title: String):RequestBuilder&#123;</span><br><span class="line">        request.setTitle(title)</span><br><span class="line">        return this</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fun setDescription(description: String):RequestBuilder&#123;</span><br><span class="line">        request.setDescription(description)</span><br><span class="line">        return this</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fun allowScanningByMediaScanner():RequestBuilder&#123;</span><br><span class="line">        request.allowScanningByMediaScanner()</span><br><span class="line">        return this</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fun setNetworkType(networkType:Int):RequestBuilder&#123;</span><br><span class="line">        request.setAllowedNetworkTypes(networkType)</span><br><span class="line">        return this</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fun setNotificationVisibility(visibility:Int):RequestBuilder&#123;</span><br><span class="line">        request.setNotificationVisibility(visibility)</span><br><span class="line">        return this</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fun setDefaultDestination(subPath:String):RequestBuilder&#123;</span><br><span class="line">        request.setDestinationInExternalFilesDir(context, Environment.DIRECTORY_DOWNLOADS, subPath)</span><br><span class="line">        return this</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fun build():DownloadManager.Request&#123;</span><br><span class="line">        return request</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>此外，记得缓存downloadId，否则退出界面之后id就丢失了。</p>
+<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>基本内容就这么多了，可能有些地方写得不好，有空也可以自己利用RandomAccessFile+Service自己实现一个简单的支持断点续存的多线程后台下载器。</p>
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2018/11/29/View事件体系-一/" data-toggle="tooltip" data-placement="top"
+                           title="View事件体系(一)">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2018/10/05/阿里云ubuntu-mysql-jdk-tomcat配置javaweb项目打war包部署/" data-toggle="tooltip" data-placement="top"
+                           title="阿里云ubuntu mysql+jdk+tomcat配置javaweb项目打war包部署">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                
+
+                
+
+
+                <!--加入新的评论系统-->
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#接锅太急？DownloadManager助你一臂之力"><span class="toc-text">接锅太急？DownloadManager助你一臂之力</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#介绍"><span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#基本使用"><span class="toc-text">基本使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#监听DownloadManager的广播"><span class="toc-text">监听DownloadManager的广播</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Query的使用"><span class="toc-text">Query的使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#查询下载状态"><span class="toc-text">查询下载状态</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#查询下载的文件的部分信息"><span class="toc-text">查询下载的文件的部分信息</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#自动安装Apk"><span class="toc-text">自动安装Apk</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#自动更新"><span class="toc-text">自动更新</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#后话"><span class="toc-text">后话</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#最后"><span class="toc-text">最后</span></a></li></ol></li></ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Hexo 2019
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                    <br>
+                    Theme by <a href="https://haojen.github.io/">Haojen Ma</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/blog.js"></script>
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://yoursite.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','','2.0.0');
+</script>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="">
+</body>
+
+</html>

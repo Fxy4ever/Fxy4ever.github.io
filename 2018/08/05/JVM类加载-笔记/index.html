@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword" content="">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-person-128.png">
+    <link rel="alternate" type="application/atom+xml" title="Hexo" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        JVM类加载-笔记｜undefined
+        
+    </title>
+
+    <link rel="canonical" href="http://yoursite.com/2018/08/05/JVM类加载-笔记/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/blog-style.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+</head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "true" data-istags="false
+" data-ishome = "false" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    Hexo
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+							
+                        <li>
+                            <a href="/404.html">[404]</a>
+                        </li>
+							
+						
+                    
+                        
+							
+                        <li>
+                            <a href="/about/">关于我</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img"
+     src="">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>JVM类加载-笔记</h1>
+                    
+                    <span class="meta">
+                         作者 John Doe
+                        <span>
+                          日期 2018-08-05
+                         </span>
+                    </span>
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/tags/#笔记"
+                           title="笔记">笔记</a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            JVM类加载-笔记
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <h2 id="类加载机制"><a href="#类加载机制" class="headerlink" title="类加载机制"></a>类加载机制</h2><p>在Java语言中，类型的加载、连接、初始化过程都是在运行时完成，虽然会给Java带来一些性能开销，但是为Java应用程序提供高度的灵活性，java里运行时动态加载和动态连接就是这个特点实现的。例如，java.class中的forname</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">Test.java</span><br><span class="line"><span class="keyword">package</span> com.fxymine4ever.test;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">say</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"Hello"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">FornameTest.java</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FornameTest</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Class c = Class.forName(<span class="string">"com.fxymine4ever.test"</span>);</span><br><span class="line">            Test test = (Test)c.newInstance();</span><br><span class="line">            test.say();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InstantiationException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IllegalAccessException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h3><h4 id="顺序"><a href="#顺序" class="headerlink" title="顺序"></a>顺序</h4><p>加载 -&gt; 验证 -&gt; 准备 -&gt; 解析 -&gt; 初始化 -&gt; 使用 -&gt; 卸载<br></p>
+<h4 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h4><p>解析和使用顺序是不固定的，解析可以在初始化之后在开始，这是为了支持Java的运行时绑定。<br></p>
+<h4 id="加载与初始化之主动引用"><a href="#加载与初始化之主动引用" class="headerlink" title="加载与初始化之主动引用"></a>加载与初始化之主动引用</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">加载没有强行规定。然而初始化必须在以下五种情况下。</span><br></pre></td></tr></table></figure>
+<p>1.遇到new、getstatic、putstatic、invokestatic这4条字节码指令时，如果类没有初始化就得先初始化。例如new对象时，读取一个类的static修饰的字段(除了被final修饰的 编译时期就放进常量池的字段)时，调用一个类的静态方法时。<br>ps：字节码 常量池<br></p>
+<p>2.对类进行反射时，如果没有初始化则需要先初始化。<br></p>
+<p>3.初始化一个类的时候，发现父类还未被初始化时，先初始化父类。<br></p>
+<p>4.当虚拟机启动的时候，需要指定一个包含main方法的类，虚拟机会最先初始化这个类。<br></p>
+<p>5.当使用JDK1.7的动态语言支持时，如果一个java.lang.invoke.MethodHandle实例最后的解析结果REF_getStatic、REF_putStatic、REF_invokeStatic的方法句柄，并且这个方法句柄所对应的类没有进行初始化，则需要先触发其初始化。</p>
+<p>ps：<br><br><strong>1.字节码</strong>(javac TestClass.java)：<br><br>利用javac编译之后的内容为十六进制的.class文件，是给机器看的。(.class文件存储在桌面)<br><br><strong>2.常量池</strong>(javap -verbose TestClass)<br><img src="http://upload-images.jianshu.io/upload_images/1986868-5b44e95ff7e30847.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image">打开.class看不懂 用上面的指令翻译<br><br><strong>3.方法句柄</strong><br>反射加强版，代码比反射简洁。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.lang.invoke.MethodHandle;</span><br><span class="line"><span class="keyword">import</span> java.lang.invoke.MethodHandles;</span><br><span class="line"><span class="keyword">import</span> java.lang.invoke.MethodType;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MethodHandleTest</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">(String s)</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"this is"</span>+s+<span class="string">"MethodHandle"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        MethodHandleTest test = <span class="keyword">new</span> MethodHandleTest();</span><br><span class="line">        MethodHandle methodHandle = getMH;<span class="comment">//获得方法句柄</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            String str = (String) methodHandle.invokeExact(test,<span class="string">" my "</span>);<span class="comment">//这里解析结果</span></span><br><span class="line">            System.out.println(str);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Throwable throwable) &#123;</span><br><span class="line">            throwable.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> MethodHandle <span class="title">getMH</span><span class="params">()</span></span>&#123;</span><br><span class="line">        MethodType methodType = MethodType.methodType(String.class,String.class);<span class="comment">//1.返回值类型 2.方法中参数类型</span></span><br><span class="line">        MethodHandle methodHandle = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">           methodHandle =  MethodHandles.lookup().findVirtual(MethodHandleTest.class,<span class="string">"toString"</span>,methodType);</span><br><span class="line">            <span class="comment">//查找方法句柄</span></span><br><span class="line">        &#125; <span class="keyword">catch</span> (NoSuchMethodException | IllegalAccessException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> methodHandle;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>运行结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span> is my MethodHandle</span><br><span class="line"></span><br><span class="line">Process finished with exit code <span class="number">0</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="加载与初始化之被动引用"><a href="#加载与初始化之被动引用" class="headerlink" title="加载与初始化之被动引用"></a>加载与初始化之被动引用</h4><p>demo1:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SuperClass</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">"这是父类初始化"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> value = <span class="number">123</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SubClass</span> <span class="keyword">extends</span> <span class="title">SuperClass</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">"这是子类初始化"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestClass</span> </span>&#123;</span><br><span class="line">       <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        System.out.println(SubClass.value);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>运行结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">这是父类初始化</span><br><span class="line"><span class="number">123</span></span><br></pre></td></tr></table></figure></p>
+<p>原因：对于静态字段，只有直接定义这个字段的类才会被初始化，也就是子类引用父类的静态字段，只会初始化父类。子类虽然不会被初始化，但是加载和验证要因虚拟机的具体实现而定。</p>
+<p>demo2:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestClass</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        SuperClass[] classes = <span class="keyword">new</span> SuperClass[<span class="number">10</span>];</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>运行结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">无</span><br></pre></td></tr></table></figure></p>
+<p>ps：并没有输出这是父类初始化，说明并没有触发SuperClass的初始化阶段，而是触发类一个org.fenixsoft.classloading.SuperClass的类，这是由虚拟机自动生成继承与Object的子类，创建动作由字节码指令newarray触发。</p>
+<p>demo3:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DemoClass</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">"类初始化"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String str = <span class="string">"这是一个字符串"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestClass</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        System.out.println(DemoClass.str);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>运行结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">这是一个字符串</span><br></pre></td></tr></table></figure></p>
+<p>ps:不会输出“类初始化”，这是因为经过final static修饰值已经被存储到TestClass的常量池中，以后对这个字符串的引用都是对常量池的引用。</p>
+<h3 id="类加载的过程"><a href="#类加载的过程" class="headerlink" title="类加载的过程"></a>类加载的过程</h3><h4 id="加载"><a href="#加载" class="headerlink" title="加载"></a>加载</h4><p>步骤1:通过一个类的全限定名来获得定义此类的二进制字节流。<br><br>步骤2:将这个字节流所代表的静态存储结构转化为方法区运行时数据结构。<br><br>步骤3:在内存中生成一个代表这个类的java.lang.Class对象，作为方法区这个类的各种数据的访问入口。<br><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">这三点要求并不具体，所以说留给了虚拟机设计团队巨大的创造空间，许多java技术都在此之上，例如从JAR包中读取，从网络中获取，运行时计算生成等。。。</span><br></pre></td></tr></table></figure></p>
+<p>加载阶段有所不同：<br><br>1.若是非数组类的加载阶段，加载阶段获取类的二进制字节流的时候，既可以使用系统提供的引导类加载器完成，又可以让开发者自定义加载器去控制字节流(即重写loadClass()方法)。<br><br>2.若是数组类的加载阶段，不通过类加载器创建。它是由Java虚拟机直接创建的(如demo2)，但数组类中的每一个元素则最终要靠类加载器去创建的。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Java虚拟机可操作的类型分为原始类型与引用类型。</span><br><span class="line"><span class="number">1</span>.原始类型：</span><br><span class="line">数值类型(<span class="keyword">int</span> <span class="keyword">double</span> 等八大基本数据类型)</span><br><span class="line"><span class="keyword">boolean</span>类型</span><br><span class="line">returnAddress类型(java虚拟机特有)</span><br><span class="line"></span><br><span class="line"><span class="number">2</span>.引用类型：</span><br><span class="line">数组类型 </span><br><span class="line">类类型</span><br><span class="line">接口类型</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">若数组的组件类型是引用类型，则会递归用前面三个方法递归加载这个组件类型，该数组将在加载该组件类型的类加载器的类名称空间上被标示。</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">若不是引用类型，如(int[] double[])等数组，Java虚拟机会把数组C标记为---与引导类加载器关联。</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">数组类的可见性与它的组件类型的可见性一致，如果组件类型不是引用类型，那么类的可见行将默认为public。</span><br></pre></td></tr></table></figure>
+<p>（类加载器后面再讲）</p>
+<p>加载结束后，虚拟机外部等二进制字节流就按照虚拟机所需要的格式存储在方法区之中，方法区中的数据存储格式由虚拟机自行实现，并无严格规定。<br><br><br><br><br><br><br><br></p>
+<h4 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h4><p>Java虚拟机不仅仅是能运行Java程序，还能运行一些其他支持Java虚拟机的语言的程序。其他某些语言不像java这么安全，比如访问数组边界以外的数据。这个时候就需要java虚拟机来检查输入的字节流，防止腊鸡代码的侵害。Java虚拟机会进行一下四个阶段的检验：文件格式验证，元数据验证，字节码验证，符号引用验证。</p>
+<h5 id="文件格式验证"><a href="#文件格式验证" class="headerlink" title="文件格式验证"></a>文件格式验证</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">确保Class文件字节流中包含的信息是否符合虚拟机的要求</span><br></pre></td></tr></table></figure>
+<p>是否以magic number 0xCAFEBABE开头<br><br>版本号是否在当前虚拟机处理范围<br><br>常量池的常量中是否由不被支持的常量类型(tag标志是否符合规定)<br><br>指向常量的索引是否有指向不存在的常量或不符合类型的常量<br><br>CONSTANT_Utf8_info中是否有不符合UTF8编码的数据<br><br>Class文件中各个部分及其文件本身是否有被删除的或附加的其他信息<br><br>······</p>
+<p>以上都是从HotPot虚拟机中摘抄的一部分，还有很多其他的验证点。都是为了保证输入的字节流能正确地解析并存储进方法区。只有通过这个阶段，字节流才会进入内存的方法区中进行存储，后面三个验证阶段都是基于方法区的存储结构进行的。<br><br><br><br><br><br></p>
+<h5 id="元数据验证"><a href="#元数据验证" class="headerlink" title="元数据验证"></a>元数据验证</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">验证字节码描述的信息是否符合Java语言规范</span><br></pre></td></tr></table></figure>
+<p>这个类是否有父类(除了Object类 其他都应有父类)<br>这个类的父类是否继承了被final修饰的类<br>如果这个类不是抽象类，是否实现了父类或其接口中的所有方法<br>类中的字段、方法是否与父类产生矛盾(例如不符合规则的重载，方法名参数一致，返回值不同)</p>
+<h5 id="字节码验证"><a href="#字节码验证" class="headerlink" title="字节码验证"></a>字节码验证</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">通过数据流和控制流确定程序语义是合法的、符合逻辑的</span><br></pre></td></tr></table></figure>
+<p>保证任意时刻操作数栈的数据类型与指令代码序列都配合工作，不会出现一个int类型的数据被当作long类型的数据加载进入变量表中。<br><br>保证跳转指令不会跳转到方法体以外的字节码中。<br><br>保证方法体中的类型转换是有效的。比如把父类对象赋值给子类对象或者把两个毫无关系的数据类型赋值。<br></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">但即使通过了字节码验证也不一定是完全安全的。因为程序的推导没法做到绝对准确，所以说在JDK1.6之后，给方法体的Code属性增加了一项叫“StackMapTable”的属性，描述了方法体中所有的基本块开始时本地变量表和操作栈应有的状态，只需要检查StackMapTable的属性是否合法。相比于类型推导，类型检查从而节省一些时间。</span><br></pre></td></tr></table></figure>
+<h4 id="符号引用验证"><a href="#符号引用验证" class="headerlink" title="符号引用验证"></a>符号引用验证</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">将符号引用转化为直接引用的过程，也就是对类自身以外，常量池中的各种符号引用的校验</span><br></pre></td></tr></table></figure>
+<p>符号引用中通过字符串描述的全限定名是否能找到对应的类。<br><br>在指定类中是否存在符合方法的字段描述符以及简单名称所描述的方法和字段。<br><br>符号引用中的类、字段、方法的访问性(private、protect、public、default)是否能被当前类访问<br></p>
+<h5 id="符号引用："><a href="#符号引用：" class="headerlink" title="符号引用："></a>符号引用：</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">符号引用以一组符号来描述所引用的目标，符号可以是任何形式的字面量，CONSTANT_Class_info、CONSTANT_Fieldref_info、</span><br><span class="line">CONSTANT_Methodref_info等类型的常量出现，只要使用时能无歧义地定位到目标即可。</span><br><span class="line"></span><br><span class="line">每一个java文件会编译成一个<span class="class"><span class="keyword">class</span>文件，符号引用与虚拟机的内存布局无关，引用目标不一定加载在内存之中。</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class">例如<span class="title">com</span>.<span class="title">test</span>.<span class="title">People</span>类引用了<span class="title">com</span>.<span class="title">test</span>.<span class="title">Eat</span>类，</span></span><br><span class="line"><span class="class">在编译时，<span class="title">People</span>类不知道<span class="title">Eat</span>类的实际内存地址，只能使用类似于<span class="title">CONSTANT_Class_info</span>(假设为<span class="title">com</span>.<span class="title">test</span>.<span class="title">Eat</span>)来表示<span class="title">Eat</span>类的地址，</span></span><br><span class="line"><span class="class">各种虚拟机的内存布局可能不同，但他们能接受的符号引用都是一致的，因为符号引用的字面量形式明确定义在</span></span><br><span class="line"><span class="class"><span class="title">Java</span>虚拟机规范的<span class="title">Class</span>格式中。</span></span><br></pre></td></tr></table></figure>
+<h5 id="直接引用："><a href="#直接引用：" class="headerlink" title="直接引用："></a>直接引用：</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">（1）直接指向目标的指针（比如，指向“类型”【Class对象】、类变量、类方法的直接引用可能是指向方法区的指针）</span><br><span class="line">（2）相对偏移量（比如，指向实例变量、实例方法的直接引用都是偏移量）</span><br><span class="line">（3）一个能间接定位到目标的句柄</span><br><span class="line"></span><br><span class="line">直接引用与内存布局有关，不同的虚拟机翻译出来的直接引用一般不会相同。如果有了直接引用，那么所引用的目标必定在内存中存在。</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">这个动作是确保之后解析动作能正常执行，若无法通过符号引用验证，则会抛出一个java.lang.IncompaClassChangeError的子类。如果运行的全部代码都被反复验证、使用过了，可以使用-Xcerify:none参数来关闭大部分的类验证措施，缩短运行时间。</span><br></pre></td></tr></table></figure>
+<p><br><br><br><br><br></p>
+<h4 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h4><p>准备阶段是正式为类变量分配内存并设置类变量初始值的阶段，这些变量所使用的内存都将在方法区中分配。这里内存分配仅包括被static修饰的变量，不包括实例变量。实例变量在对象实例化的时候会随着对象一起分配在java堆中。</p>
+<p>有两种情况：<br><br>1.public static int value = 123;<br><br>2.public static final int value = 123;<br></p>
+<p>前者会在准备阶段赋一个初始值0，然后在程序编译的时候，根据putstatic指令赋值123。而后者会因为代码编译时给value生成ConstantVelue属性，虚拟机会根据这个属性将value的值赋为123<br><br><br><br><img src="https://note.youdao.com/yws/api/personal/file/WEB6614c945f33779e340883272db4538d2?method=download&amp;shareKey=22f732c5765a1a5fd01e708220f10dfc" alt="image"></p>
+<h4 id="解析："><a href="#解析：" class="headerlink" title="解析："></a>解析：</h4><p>虚拟机将常量池内的符号引用替换为直接引用的过程。</p>
+<p>符号引用在Class文件中常以CONSTANT_Class_info、CONSTANT_Fieldref_info、CONSTANT_Methodref_info等类型的常量出现。</p>
+<p>虚拟机规范中，并未规定解析阶段所发生的时间，只要求了在anewarray、checkcast、getfield、getstatic、instanceof、invokedynamic、invokeinterface、invokespecila、invokeestatic、invokevirtual、ldc、ldc_w、miltianewarray、new、putfield、putstatic这十六个用于操作符号引用的字节码指令之前。</p>
+<p>所以说，虚拟机的实现会根据需求来判断是在类被加载器加载时就对常量池中的符号引用进行解析，还是等到一个符号引用要被使用前才去解析。</p>
+<h5 id="解析分为两种情况："><a href="#解析分为两种情况：" class="headerlink" title="解析分为两种情况："></a>解析分为两种情况：</h5><h6 id="1-非invokedynamic指令："><a href="#1-非invokedynamic指令：" class="headerlink" title="1.非invokedynamic指令："></a>1.非invokedynamic指令：</h6><p>这些指令会在第一次解析时就实现缓存，避免重复调用时多次解析。若第一次成功，则之后的解析都应当成功。若第一次解析失败，则其他指令对这个符号的解析请求也应该收到相同的异常。</p>
+<h6 id="2-invokedynamic指令："><a href="#2-invokedynamic指令：" class="headerlink" title="2.invokedynamic指令："></a>2.invokedynamic指令：</h6><p>对于invokedynacmic指令，前面某个已经有invokedynamic指令触发过的符号引用时，后面的invokedynamic不会生效。因为这个指令用于动态语言支持(java不会生成这条字节码)，它所对应的引用称为“动态调用点限定符”，意味着只要有程序实际运行到这条指令的时候，解析才能开始。</p>
+<p>区别：前者指令都是静态的，可以在刚刚完成加载阶段，还没开始执行代码时候就解析。</p>
+<p>解析动作主要针对类或接口、字段、类方法、接口方法、方法类型、方法句柄和调用点限定符7类符号引用进行。也分别对应着七中常量类型。<br><br></p>
+<h5 id="下面介绍前四种解析过程"><a href="#下面介绍前四种解析过程" class="headerlink" title="下面介绍前四种解析过程"></a>下面介绍前四种解析过程</h5><h6 id="1-类或接口的解析"><a href="#1-类或接口的解析" class="headerlink" title="1.类或接口的解析"></a>1.类或接口的解析</h6><p>假设类A，如果要把一个从未解析过的符号引用N解析为一个类或接口C的引用，那么将要进行三个步骤：</p>
+<p>1⃣如果C不是一个数组类型，那虚拟机将会把代表N的全限定名传递给A的类加载器器加载这个类C。由于可能需要验证，会触发类或接口的加载动作，如果加载中出现了问题，解析过程就失败了。<br></p>
+<p>2⃣如果C是一个数组类型，并且数组的元素类型为对象，也就是N的描述符会是类似“[Ljava/lang/Integer”的形式，就会按照1⃣的规则加载数组元素类型。若N的描述符如前面符号引用里讲的假设的形式，则需要加载的元素类型就是”java.lang.Integer”，接着由虚拟机生成一个代表此数组维度和元素的数组对象。<br></p>
+<p>3⃣如果上面步骤未出现任何问题，则C在虚拟机中实际上已经是一个有效的类或接口类，解析完成之后还要进行符号引用验证，确定A否具有对C的访问权限，若不具有则会抛出java.lang.IllegalAccessError.</p>
+<h6 id="2-字段解析"><a href="#2-字段解析" class="headerlink" title="2.字段解析"></a>2.字段解析</h6><p>要解析一个未被解析过的字段符号引用，首先会对字段表内class_index项中索引的CONSTANT_Class_info符号引用进行解析，也就是字段所属的类或接口的符号引用。如果解析这个类或接口符号引用的过程中出现了任何异常，都会导致字段符号引用解析的失败。<br>如果解析成功完成，将这个字段所属的类用C表示，则会进行后续步骤：<br></p>
+<p>1⃣如果C本身包含类简单名称和字段描述符都与目标相匹配的字段，则返回这个字段的直接引用。<br><br>2⃣否则，如果在C中实现类接口，将会按照继承关系从上到下递归搜索各个接口和它的父接口，如果接口中包含了简单名称和字段描述符都与目标相匹配的字段，则返回这个字段的直接引用。<br><br>3⃣否则，如果C不是java.lang.Object，将会按照继承关系从上往下递归搜索各个接口和它的父接口，如果父类中包含了简单名称和字段描述符都与目标相匹配的字段，则返回这个字段的直接引用。<br><br>4⃣否则，查找失败，抛出java.lang.NoSuchFieldError异常。</p>
+<p>最后，如果成功则会进行权限检验，看看是否具有访问权限。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">public class FieldResulution&#123;</span><br><span class="line">    interface Interface0&#123;</span><br><span class="line">        int A = 0;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    interface Interface1 extend Interface0&#123;</span><br><span class="line">        int A = 1;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    interface Interface2&#123;</span><br><span class="line">        int A = 2;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    static class Parent implements Interface1&#123;</span><br><span class="line">        public static int A = 3;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    static class Sub extends Parent impelements Interface2&#123;</span><br><span class="line">        public static int A = 4;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    public static void main(String[] args)&#123;</span><br><span class="line">        System.out.println(Sub.A);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">4</span><br></pre></td></tr></table></figure></p>
+<p>如果将System.out.println(Sub.A); 注释掉，则不会通过编译。因为此时extend和implements会同时存在字段A。</p>
+<h6 id="3-类方法解析"><a href="#3-类方法解析" class="headerlink" title="3.类方法解析"></a>3.类方法解析</h6><p>与字段解析第一个步骤一样，先解析出类方法表的class_index项中索引的方法所属的类或接口的符号引用，如果解析成功，我们用C表示这个类，将会执行以下几个步骤：<br></p>
+<p>1⃣类方法和接口方法符号引用的常量类型定义是分开的，如果在类方法表中发现class_index中索引的c是个接口，那就直接抛出java.lang.IncompatibleClassChangeError异常。<br><br>2⃣如果通过类第一步，在c类中查找是否有简单名称和描述符都与目标相匹配的方法，如果有则返回这个方法的直接引用，查找结束。<br><br>3⃣否则，在类C的父类中递归查找是否有简单名称和描述符都与目标相匹配的方法，如果有则返回这个方法的直接引用，查找结束。<br><br>4⃣否则，在类C的接口列表以及他们的父接口之中递归查找是否有简单名称和描述符都匹配的方法，如果存在匹配到方法，说明类C是一个抽象类，这是查找结束，抛出java.lang.AbstractMethodError异常。<br>5⃣否则，宣告方法查找失败，抛出java.lang.NoSuchMethodError。</p>
+<p>最后再验证是否具有对这个方法的访问权限，不具有则抛出java.lang.IllegalAccessError异常。</p>
+<h6 id="4-接口方法解析"><a href="#4-接口方法解析" class="headerlink" title="4.接口方法解析"></a>4.接口方法解析</h6><p>和之前一样，接口方法也需要先解析出接口方法表的class_index项中索引的方法所属的类和接口的符号引用。如果解析成功，则依然用C来表示这个接口：</p>
+<p>1⃣在接口方法表中发现class_index的索引C是个类而不是接口，那就直接抛出java.lang.IncompatibleClassChangeErroe<br><br>2⃣否则，在接口C中查找是否有简单名称和描述符都与目标相匹配的方法，如果有则返回这个方法的直接引用，查找结束。<br><br>3⃣否则，在接口C的父接口中递归查找，直到java.lang.Object类(查找范围会包括Object类)为止，看是否有简单名称和描述符都与目标相匹配的方法，如果有则返回这个方法的直接引用，查找结束。<br><br>4⃣否则，宣告方法查找失败，抛出java.lang.NoSuchMethodError。</p>
+<p>接口方法都是默认public的，所以说不需要检查权限。</p>
+<h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><p>类初始化阶段是类加载过程的最后一步，前面的类加载过程中，大部分动作完全由虚拟机主导和控制，只有在加载阶段用户应用程序可以通过自定义类加载器参与。到了初始化阶段，才真正开始执行类中定义的Java程序代码(字节码)。</p>
+<p>在准备阶段，变量已经被赋过一次系统的默认值，在初始化阶段，根据具体实现去初始化变量和其他资源。</p>
+<p>实际上这是执行类构造器<clinit>()方法的过程。下面介绍<clinit>()方法执行过程中的一些坑：<br><br><br><br><br><br><br>一、<clinit>()是由编译器自动收集类中的所有类变量的<strong>赋值动作</strong>和静态语句块(static{}块)中的<strong>语句</strong>合并产生的，编译器收集的顺序是由语句在源文件中出现的顺序所决定，静态语句块中只能访问到定义在定义在静态语句块之前的变量，定义在它后面的变量，只能赋值，不能访问<br><br>demo1:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span></span>&#123;</span><br><span class="line">    <span class="keyword">static</span>&#123;</span><br><span class="line">        i = <span class="number">0</span>; <span class="comment">//正常编译通过</span></span><br><span class="line">        System.out.print(i);<span class="comment">//不会通过编译 提示“非法向前引用”</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">int</span> i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></clinit></clinit></clinit></p>
+<p>二、<clinit>()方法(类构造器)与类的构造函数(实例构造器<init>()方法)不同，它不需要显式调用父类构造器，虚拟机会保证在子类<clinit>()方法之前，父类的<clinit>()方法已经执行完毕。因此最先执行<clinit>()的肯定是java.lang.Object。<br></clinit></clinit></clinit></init></clinit></p>
+<p>三、由于父类的<clinit>()方法先执行，父类中定义的静态语句块要优先于子类的变量赋值操作。<br><br>demo2:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Parent</span></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> A = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">static</span>&#123;</span><br><span class="line">        A = <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Sub</span> <span class="keyword">extends</span> <span class="title">Parent</span></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> B = A;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span></span>&#123;</span><br><span class="line">    System.out.println(Sub.B)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></clinit></p>
+<p>运行结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1</span><br></pre></td></tr></table></figure></p>
+<p>四、若一个类没有静态语句看，那么<clinit>()方法不是必须的，编译器可以不为这个类生成<clinit>()。</clinit></clinit></p>
+<p>五、接口中不能使用静态语句块，但是仍可以执行变量初始化的复制操作，因此接口和类一样都会生成<clinit>()方法，但是接口不需要执行父接口的<clinit>()。只有当父接口的变量使用时，才会初始化父接口。接口的实现类的初始化也不会初始化接口的<clinit>()方法。</clinit></clinit></clinit></p>
+<p>六、虚拟机会保证一个类的<clinit>()方法在多线程环境中被正常地加锁、同步，如果多个线程去同时初始化一个类，那么只会有一个线程去执行这个类的<clinit>()方法，其他线程都需要阻塞等待，直到该线程制定完毕。这样，当<clinit>()方法特别耗时的化，则会产生多个线程阻塞，这并不容易发现。</clinit></clinit></clinit></p>
+<h3 id="类加载器"><a href="#类加载器" class="headerlink" title="类加载器"></a>类加载器</h3><p>虚拟机设计团队将类加载阶段中的”通过一个类的全限定名来获取此类的二进制字节流”这个动作放在虚拟机外部实现，以便让应用程序自己决定如何去获取所需要的类。实现这个动作的代码模块叫做“类加载器”。它在类层次划分、OSGi、热部署、代码加密等领域上有着突出贡献。</p>
+<h4 id="类与类加载器"><a href="#类与类加载器" class="headerlink" title="类与类加载器"></a>类与类加载器</h4><p>类加载器不仅仅是用来实现类的加载动作。每一个类都需要与类加载器一起确定唯一性。比较两个类是否相等，必须是在他们拥有同一个类加载器的前提之下，若类加载器不相等，则他们俩一定不相等。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestClass</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> ClassNotFoundException, IllegalAccessException, InstantiationException </span>&#123;</span><br><span class="line">        ClassLoader classLoader = <span class="keyword">new</span> ClassLoader() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> Class&lt;?&gt; loadClass(String name) <span class="keyword">throws</span> ClassNotFoundException &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    String fileName = name.substring(name.indexOf(<span class="string">"."</span>)+<span class="number">1</span>);</span><br><span class="line">                    InputStream is = getClass().getResourceAsStream(fileName);</span><br><span class="line">                    <span class="keyword">if</span>(is == <span class="keyword">null</span>)&#123;</span><br><span class="line">                        <span class="keyword">return</span> <span class="keyword">super</span>.loadClass(name);</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">byte</span>[] bytes = <span class="keyword">new</span> <span class="keyword">byte</span>[is.available()];</span><br><span class="line">                    is.read(bytes);</span><br><span class="line">                    <span class="keyword">return</span> defineClass(name,bytes,<span class="number">0</span>,bytes.length);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        Object o = classLoader.loadClass(<span class="string">"DemoClass"</span>).newInstance();</span><br><span class="line">        System.out.println(o.getClass());</span><br><span class="line">        System.out.println(o <span class="keyword">instanceof</span> DemoClass);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>运行结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">DemoClass</span><br><span class="line"><span class="keyword">false</span></span><br></pre></td></tr></table></figure></p>
+<p>上图构造了一个简单的类加载器，第一句可以看出确实是DemoClass实例出来的对象，第二句是因为两者的类加载器不同，所以说做对象所属类型检查结果为false。</p>
+<p>时间不多 到此为止吧<br>有很多不足 希望见谅</p>
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2018/10/05/阿里云ubuntu-mysql-jdk-tomcat配置javaweb项目打war包部署/" data-toggle="tooltip" data-placement="top"
+                           title="阿里云ubuntu mysql+jdk+tomcat配置javaweb项目打war包部署">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2018/06/24/廖雪峰git笔记/" data-toggle="tooltip" data-placement="top"
+                           title="廖雪峰git笔记">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                
+
+                
+
+
+                <!--加入新的评论系统-->
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#类加载机制"><span class="toc-text">类加载机制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#生命周期"><span class="toc-text">生命周期</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#顺序"><span class="toc-text">顺序</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#解析"><span class="toc-text">解析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#加载与初始化之主动引用"><span class="toc-text">加载与初始化之主动引用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#加载与初始化之被动引用"><span class="toc-text">加载与初始化之被动引用</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#类加载的过程"><span class="toc-text">类加载的过程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#加载"><span class="toc-text">加载</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#验证"><span class="toc-text">验证</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#文件格式验证"><span class="toc-text">文件格式验证</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#元数据验证"><span class="toc-text">元数据验证</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#字节码验证"><span class="toc-text">字节码验证</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#符号引用验证"><span class="toc-text">符号引用验证</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#符号引用："><span class="toc-text">符号引用：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#直接引用："><span class="toc-text">直接引用：</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#准备"><span class="toc-text">准备</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#解析："><span class="toc-text">解析：</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#解析分为两种情况："><span class="toc-text">解析分为两种情况：</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#1-非invokedynamic指令："><span class="toc-text">1.非invokedynamic指令：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#2-invokedynamic指令："><span class="toc-text">2.invokedynamic指令：</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#下面介绍前四种解析过程"><span class="toc-text">下面介绍前四种解析过程</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#1-类或接口的解析"><span class="toc-text">1.类或接口的解析</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#2-字段解析"><span class="toc-text">2.字段解析</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#3-类方法解析"><span class="toc-text">3.类方法解析</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#4-接口方法解析"><span class="toc-text">4.接口方法解析</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#初始化"><span class="toc-text">初始化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#类加载器"><span class="toc-text">类加载器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#类与类加载器"><span class="toc-text">类与类加载器</span></a></li></ol></li></ol></li></ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Hexo 2019
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                    <br>
+                    Theme by <a href="https://haojen.github.io/">Haojen Ma</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/blog.js"></script>
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://yoursite.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','','2.0.0');
+</script>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="">
+</body>
+
+</html>
