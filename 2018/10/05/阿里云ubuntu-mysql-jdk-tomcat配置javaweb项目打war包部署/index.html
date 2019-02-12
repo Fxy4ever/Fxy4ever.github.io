@@ -1,103 +1,397 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><meta name="author" content="Fxymine4ever"><meta name="renderer" content="webkit"><meta name="copyright" content="Fxymine4ever"><meta name="keywords" content="Hexo"><meta name="description" content="null"><meta name="Cache-Control" content="no-cache"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>阿里云ubuntu mysql+jdk+tomcat配置javaweb项目打war包部署 · 只会摸鱼的程序猿</title><link rel="stylesheet" href="/css/style.css?v=2018.7.9"><link rel="stylesheet" href="/css/animation.css?v=2018.7.9"><link rel="icon" href="/img/assets/avatar.jpeg"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><!-- scripts--><script>(function( w ){
-  "use strict";
-  // rel=preload support test
-  if( !w.loadCSS ){
-    w.loadCSS = function(){};
-  }
-  // define on the loadCSS obj
-  var rp = loadCSS.relpreload = {};
-  // rel=preload feature support test
-  // runs once and returns a function for compat purposes
-  rp.support = (function(){
-    var ret;
-    try {
-      ret = w.document.createElement( "link" ).relList.supports( "preload" );
-    } catch (e) {
-      ret = false;
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.jpeg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.jpeg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.jpeg?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/favicon.jpeg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Linux," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="ubuntu16.04配置mysql+jdk+tomcat+ftp+nginx部署idea的java web项目学长们说：后端可以不懂安卓，但是安卓一定要懂后端。秉承着这样的心态，最近我学习了一下python，爬了一份数据，通过java web的servlet并且自己制作了一个查询xx信息的接口。但是想一步到位，想把java web项目直接部署到服务器上。网上参差不齐的教程坑死我了，于是我就打算记">
+<meta name="keywords" content="Linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="阿里云ubuntu mysql+jdk+tomcat配置javaweb项目打war包部署">
+<meta property="og:url" content="https://fengxinyao1.github.io/2018/10/05/阿里云ubuntu-mysql-jdk-tomcat配置javaweb项目打war包部署/index.html">
+<meta property="og:site_name" content="一个泊客">
+<meta property="og:description" content="ubuntu16.04配置mysql+jdk+tomcat+ftp+nginx部署idea的java web项目学长们说：后端可以不懂安卓，但是安卓一定要懂后端。秉承着这样的心态，最近我学习了一下python，爬了一份数据，通过java web的servlet并且自己制作了一个查询xx信息的接口。但是想一步到位，想把java web项目直接部署到服务器上。网上参差不齐的教程坑死我了，于是我就打算记">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/13750201-c76c185473b8bd03?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/13750201-303466f52963827e?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/13750201-b61b985099d056fd?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/13750201-58c4a4d543683813?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/13750201-2810a243fd6f2ec2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/13750201-add76cb5c02a4562.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/13750201-cf1e1cca639692d8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/13750201-628fd431be8abfbb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/13750201-4fa59f7b2ec681da.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/13750201-9d91e2328dab70df.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/13750201-697d5f671a104965.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/13750201-c5f5b28066932b6f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/13750201-d888839939fc392a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/13750201-beb0cf40fb5db055.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/13750201-3bae5cd627eec48a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/13750201-12fb192a0cecc87d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/13750201-bd480a7cb52f9814.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/13750201-1fc05992883d4626.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2019-02-12T19:03:16.027Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="阿里云ubuntu mysql+jdk+tomcat配置javaweb项目打war包部署">
+<meta name="twitter:description" content="ubuntu16.04配置mysql+jdk+tomcat+ftp+nginx部署idea的java web项目学长们说：后端可以不懂安卓，但是安卓一定要懂后端。秉承着这样的心态，最近我学习了一下python，爬了一份数据，通过java web的servlet并且自己制作了一个查询xx信息的接口。但是想一步到位，想把java web项目直接部署到服务器上。网上参差不齐的教程坑死我了，于是我就打算记">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/13750201-c76c185473b8bd03?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Fxymine4ever'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
     }
-    return function(){
-      return ret;
-    };
-  })();
-
-  // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
-  // then change that media back to its intended value on load
-  rp.bindMediaToggle = function( link ){
-    // remember existing media attr for ultimate state, or default to 'all'
-    var finalMedia = link.media || "all";
-
-    function enableStylesheet(){
-      link.media = finalMedia;
-    }
-
-    // bind load handlers to enable media
-    if( link.addEventListener ){
-      link.addEventListener( "load", enableStylesheet );
-    } else if( link.attachEvent ){
-      link.attachEvent( "onload", enableStylesheet );
-    }
-
-    // Set rel and non-applicable media type to start an async request
-    // note: timeout allows this to happen async to let rendering continue in IE
-    setTimeout(function(){
-      link.rel = "stylesheet";
-      link.media = "only x";
-    });
-    // also enable media after 3 seconds,
-    // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
-    setTimeout( enableStylesheet, 3000 );
   };
-
-  // loop through link elements in DOM
-  rp.poly = function(){
-    // double check this to prevent external calls from running
-    if( rp.support() ){
-      return;
-    }
-    var links = w.document.getElementsByTagName( "link" );
-    for( var i = 0; i < links.length; i++ ){
-      var link = links[ i ];
-      // qualify links to those with rel=preload and as=style attrs
-      if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
-        // prevent rerunning on link
-        link.setAttribute( "data-loadcss", true );
-        // bind listeners to toggle media back
-        rp.bindMediaToggle( link );
-      }
-    }
-  };
-
-  // if unsupported, run the polyfill
-  if( !rp.support() ){
-    // run once at least
-    rp.poly();
-
-    // rerun poly on an interval until onload
-    var run = w.setInterval( rp.poly, 500 );
-    if( w.addEventListener ){
-      w.addEventListener( "load", function(){
-        rp.poly();
-        w.clearInterval( run );
-      } );
-    } else if( w.attachEvent ){
-      w.attachEvent( "onload", function(){
-        rp.poly();
-        w.clearInterval( run );
-      } );
-    }
-  }
+</script>
 
 
-  // commonjs
-  if( typeof exports !== "undefined" ){
-    exports.loadCSS = loadCSS;
-  }
-  else {
-    w.loadCSS = loadCSS;
-  }
-}( typeof global !== "undefined" ? global : this ) );</script><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" defer></script><script src="/js/main.js?v=2018.7.9" defer></script><!-- fancybox--><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script><!-- busuanzi--><script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script></head><body><section class="profile-close" id="cxo-profile"><div class="profile-avatar"><i class="fa fa-caret-left"></i><img src="/img/assets/avatar.jpeg"></div><!--.profile-saying
-  i.fa.fa-comment
-  .saying--><div class="cxo-profile-inner"><div class="profile-name">Fxymine4ever</div><div class="profile-signature">for me</div><div class="friends"><div>FRIENDS</div><span><a href="https://blog.cynthial.cn/" target="_black">Cchanges</a></span><span><a href="http://hosigus.com/" target="_black">Hosigus</a></span><span><a href="http://118.24.175.82/" target="_black">leaf</a></span><span><a href="https://k4ii.github.io" target="_black">K4ii</a></span><span><a href="http://blog.mashiroc.fun/" target="_black">人赢仓仓子</a></span><span><a href="https://blog.fenghaha.com/" target="_black">Fenghaha</a></span></div><div class="read-progress"></div></div></section><header id="cxo-intro" style="height: 70vh;background-image: url(/img/intro/index-bg.png);"><nav id="cxo-intro-nav"><section><div class="intro-nav-title"><a href="/">Fxy's blog</a></div><div class="intro-nav-label-box"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div><i class="fa fa-bars intro-nav-menu"><div class="intro-nav-drop"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div></i><div class="clear"></div></section></nav><h1 class="post-title">阿里云ubuntu mysql+jdk+tomcat配置javaweb项目打war包部署</h1><div class="post-intros"><div class="post-intro-meta"><span class="post-intro-time"><i class="post-intro-calendar fa fa-calendar"></i><span>2018-10-05</span></span><span class="post-intro-tags"><a class="intro-tag fa fa-tag" href="javascript:void(0)" date-tags="Linux"> Linux</a></span></div><div class="post-intro-read"><span> Word count: <span class="post-count">1.8k</span> | Reading time: <span class="post-count">7</span>min</span></div></div></header><article class="cxo-up" id="cxo-content-outer"><section id="cxo-content-inner"><article class="article-entry" id="post"><h2 id="阿里云ubuntu16-04配置mysql-jdk-tomcat-nginx部署idea的java-web项目"><a href="#阿里云ubuntu16-04配置mysql-jdk-tomcat-nginx部署idea的java-web项目" class="headerlink" title="阿里云ubuntu16.04配置mysql+jdk+tomcat+nginx部署idea的java web项目"></a>阿里云ubuntu16.04配置mysql+jdk+tomcat+nginx部署idea的java web项目</h2><p>学长们说：后端可以不懂安卓，但是安卓一定要懂后端。秉承着这样的心态，最近我学习了一下python，爬了一份数据，通过java web的servlet并且自己制作了一个查询xx信息的接口。但是想一步到位，想把java web项目直接部署到服务器上。网上参差不齐的教程坑死我了，于是我就打算记录自己配置的过程，方便以后查看。</p>
+
+  <link rel="canonical" href="https://fengxinyao1.github.io/2018/10/05/阿里云ubuntu-mysql-jdk-tomcat配置javaweb项目打war包部署/"/>
+
+
+
+
+
+  <title>阿里云ubuntu mysql+jdk+tomcat配置javaweb项目打war包部署 | 一个泊客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">一个泊客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://fengxinyao1.github.io/2018/10/05/阿里云ubuntu-mysql-jdk-tomcat配置javaweb项目打war包部署/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Fxymine4ever">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://fxy.red/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一个泊客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">阿里云ubuntu mysql+jdk+tomcat配置javaweb项目打war包部署</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-05T03:32:07+08:00">
+                2018-10-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/10/05/阿里云ubuntu-mysql-jdk-tomcat配置javaweb项目打war包部署/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/10/05/阿里云ubuntu-mysql-jdk-tomcat配置javaweb项目打war包部署/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.8k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  7
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="ubuntu16-04配置mysql-jdk-tomcat-ftp-nginx部署idea的java-web项目"><a href="#ubuntu16-04配置mysql-jdk-tomcat-ftp-nginx部署idea的java-web项目" class="headerlink" title="ubuntu16.04配置mysql+jdk+tomcat+ftp+nginx部署idea的java web项目"></a>ubuntu16.04配置mysql+jdk+tomcat+ftp+nginx部署idea的java web项目</h2><p>学长们说：后端可以不懂安卓，但是安卓一定要懂后端。秉承着这样的心态，最近我学习了一下python，爬了一份数据，通过java web的servlet并且自己制作了一个查询xx信息的接口。但是想一步到位，想把java web项目直接部署到服务器上。网上参差不齐的教程坑死我了，于是我就打算记录自己配置的过程，方便以后查看。</p>
+<a id="more"></a>
 <hr>
 <h3 id="Mysql安装"><a href="#Mysql安装" class="headerlink" title="Mysql安装"></a>Mysql安装</h3><h4 id="1-更新软件源"><a href="#1-更新软件源" class="headerlink" title="1.更新软件源"></a>1.更新软件源</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get update</span><br></pre></td></tr></table></figure>
 <h4 id="2-安装"><a href="#2-安装" class="headerlink" title="2.安装"></a>2.安装</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">apt-get install mysql-server</span><br><span class="line">执行中会要求你初始化mysql的登陆密码</span><br></pre></td></tr></table></figure>
@@ -105,9 +399,9 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install libmysqlclient-dev</span><br></pre></td></tr></table></figure>
 <h4 id="3-查看是否安装成功"><a href="#3-查看是否安装成功" class="headerlink" title="3.查看是否安装成功"></a>3.查看是否安装成功</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netstat -tap | grep mysql</span><br></pre></td></tr></table></figure>
 <h4 id="4-开启远程访问"><a href="#4-开启远程访问" class="headerlink" title="4.开启远程访问"></a>4.开启远程访问</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/mysql/mysql.conf.d/mysqld.cnf</span><br><span class="line">注释掉 bind-address = 127.0.0.1</span><br></pre></td></tr></table></figure>
-<h4 id="5-在阿里云安全组内开启3306端口入口"><a href="#5-在阿里云安全组内开启3306端口入口" class="headerlink" title="5.在阿里云安全组内开启3306端口入口"></a>5.在阿里云安全组内开启3306端口入口</h4><p><img src="http://note.youdao.com/yws/public/resource/58f83d8d4befc54214e3f1b422fc6642/A357A6EB114640A3829C2928049059F1?ynotemdtimestamp=1538681830111" alt="image"></p>
-<p><img src="http://note.youdao.com/yws/public/resource/58f83d8d4befc54214e3f1b422fc6642/5C1693C190204E61BFB07AC65D85B917?ynotemdtimestamp=1538681830111" alt="image"></p>
-<p><img src="http://note.youdao.com/yws/public/resource/58f83d8d4befc54214e3f1b422fc6642/CABAED6B770340858FEBABFD462ED670?ynotemdtimestamp=1538681830111" alt="image"></p>
+<h4 id="5-在阿里云安全组内开启3306端口入口"><a href="#5-在阿里云安全组内开启3306端口入口" class="headerlink" title="5.在阿里云安全组内开启3306端口入口"></a>5.在阿里云安全组内开启3306端口入口</h4><p><img src="http://upload-images.jianshu.io/upload_images/13750201-c76c185473b8bd03?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/13750201-303466f52963827e?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/13750201-b61b985099d056fd?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
 <h4 id="6-最后"><a href="#6-最后" class="headerlink" title="6.最后"></a>6.最后</h4><p>开启服务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service mysql start</span><br></pre></td></tr></table></figure></p>
 <p>登陆mysql<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql -uroot -p</span><br></pre></td></tr></table></figure></p>
 <hr>
@@ -118,48 +412,48 @@
 <p>在文件尾添加：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">set java environment</span><br><span class="line">JAVA_HOME=/usr/local/jdk/jdk1.8.0_141        </span><br><span class="line">JRE_HOME=/usr/local/jdk1.8.0_141/jre     </span><br><span class="line">CLASS_PATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar:$JRE_HOME/lib</span><br><span class="line">PATH=$PATH:$JAVA_HOME/bin:$JRE_HOME/bin</span><br><span class="line">export JAVA_HOME JRE_HOME CLASS_PATH PATH</span><br></pre></td></tr></table></figure></p>
 <p>然后保存退出<br><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">注意：JAVA_HOME与JRE_HOME根据你所下载的jdk版本和位置配置</span><br></pre></td></tr></table></figure></p>
 <p>5.是否安装成功<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -version</span><br></pre></td></tr></table></figure></p>
-<p><img src="http://note.youdao.com/yws/public/resource/58f83d8d4befc54214e3f1b422fc6642/DFFB166F0C724A98BFC92925856167D3?ynotemdtimestamp=1538681830111" alt="image">显示版本号则证明安装成功</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/13750201-58c4a4d543683813?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image">显示版本号则证明安装成功</p>
 <hr>
 <h3 id="Tomcat安装"><a href="#Tomcat安装" class="headerlink" title="Tomcat安装"></a>Tomcat安装</h3><h4 id="1-下载文件"><a href="#1-下载文件" class="headerlink" title="1.下载文件"></a>1.下载文件</h4> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget --no-check-certificate --no-cookies --header &quot;Cookie: oraclelicense=accept-securebackup-cookie&quot; https://mirrors.cnnic.cn/apache/tomcat/tomcat-8/v8.5.34/bin/apache-tomcat-8.5.34.tar.gz</span><br></pre></td></tr></table></figure>
 <h4 id="2-创建安装目录-1"><a href="#2-创建安装目录-1" class="headerlink" title="2.创建安装目录"></a>2.创建安装目录</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir /usr/local/tomcat</span><br></pre></td></tr></table></figure>
 <h4 id="3-解压-1"><a href="#3-解压-1" class="headerlink" title="3.解压"></a>3.解压</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf apache-tomcat-8.5.34.tar.gz -C /usr/local/tomcat/</span><br></pre></td></tr></table></figure>
 <h4 id="4-启动tomcat"><a href="#4-启动tomcat" class="headerlink" title="4.启动tomcat"></a>4.启动tomcat</h4><p>打开<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local/tomcat/apache-tomcat-8.5.34/bin</span><br></pre></td></tr></table></figure></p>
 <p>启动<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./startup.sh</span><br></pre></td></tr></table></figure></p>
-<p><strong>看见当前页面 则表示tomcat配置成功</strong><br><br><img src="http://p4sze9l87.bkt.clouddn.com/tomcat%E9%A1%B5%E9%9D%A2.png" alt="image"></p>
-<p>我们可以通过mv命令修改文件夹名称，方便日后使用。(注意哪些地方使用到了这些个地址，不然超级坑！)<br><img src="http://p4sze9l87.bkt.clouddn.com/mv.png" alt="image"></p>
+<p><strong>访问8080端口 看见tomcat的页面 则表示tomcat配置成功</strong><br></p>
+<p>我们可以通过mv命令修改文件夹名称，方便日后使用。(注意哪些地方使用到了这些个地址，不然超级坑！)<br><img src="http://upload-images.jianshu.io/upload_images/13750201-2810a243fd6f2ec2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
 <hr>
 <h3 id="vsftpd安装"><a href="#vsftpd安装" class="headerlink" title="vsftpd安装"></a>vsftpd安装</h3><h4 id="1-安装"><a href="#1-安装" class="headerlink" title="1.安装"></a>1.安装</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install vsftpd</span><br></pre></td></tr></table></figure>
 <h4 id="2-运行"><a href="#2-运行" class="headerlink" title="2.运行"></a>2.运行</h4><h5 id="启动ftpd服务"><a href="#启动ftpd服务" class="headerlink" title="启动ftpd服务"></a>启动ftpd服务</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo service vsftpd start</span><br></pre></td></tr></table></figure>
 <h5 id="停止ftpd服务"><a href="#停止ftpd服务" class="headerlink" title="停止ftpd服务"></a>停止ftpd服务</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo service vsftpd stop</span><br></pre></td></tr></table></figure>
 <h5 id="重启ftpd服务"><a href="#重启ftpd服务" class="headerlink" title="重启ftpd服务"></a>重启ftpd服务</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo service vsftpd restart</span><br></pre></td></tr></table></figure>
 <h5 id="查看21号端口是否打开"><a href="#查看21号端口是否打开" class="headerlink" title="查看21号端口是否打开"></a>查看21号端口是否打开</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo netstat -npltu | grep 21</span><br></pre></td></tr></table></figure>
-<p><img src="http://p4sze9l87.bkt.clouddn.com/21port.png" alt="image"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/13750201-add76cb5c02a4562.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
 <h5 id="查看当前ftpd运行状态"><a href="#查看当前ftpd运行状态" class="headerlink" title="查看当前ftpd运行状态"></a>查看当前ftpd运行状态</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo service vsftpd status</span><br></pre></td></tr></table></figure>
 <h4 id="3-etc-vsftpd-conf-相关配置"><a href="#3-etc-vsftpd-conf-相关配置" class="headerlink" title="3./etc/vsftpd.conf 相关配置"></a>3./etc/vsftpd.conf 相关配置</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"># 设置为YES时vsftpd以独立运行方式启动，设置为NO时以xinetd方式启动</span><br><span class="line">#（xinetd是管理守护进程的，将服务集中管理，可以减少大量服务的资源消耗）</span><br><span class="line">listen=YES</span><br><span class="line"></span><br><span class="line"># ipv6网络</span><br><span class="line">listen_ipv6=YES</span><br><span class="line"></span><br><span class="line"># 匿名用户访问</span><br><span class="line">anonymous_enable=NO</span><br><span class="line"></span><br><span class="line"># 本地用户访问</span><br><span class="line">local_enable=YES</span><br><span class="line"></span><br><span class="line"># 本地用户是否允许上传</span><br><span class="line">write_enable=YES</span><br><span class="line"></span><br><span class="line"># 本地用户上传文件的权限掩码</span><br><span class="line">local_umask=022</span><br><span class="line"></span><br><span class="line"># 匿名用户上传文件</span><br><span class="line">#anon_upload_enable=YES</span><br><span class="line"></span><br><span class="line"># 匿名用户创建目录</span><br><span class="line">#anon_mkdir_write_enable=YES</span><br><span class="line"></span><br><span class="line"># 用户进入目录时是否显示message_file指定的文件内容</span><br><span class="line">#dirmessage_enable=YES</span><br><span class="line"></span><br><span class="line"># 强制ftp数据传输使用20端口</span><br><span class="line">connect_from_port_20=YES</span><br><span class="line"></span><br><span class="line"># 登陆后显示的信息</span><br><span class="line">ftpd_banner=Horizon FTP.</span><br><span class="line"></span><br><span class="line"># 如果禁止所有用户访问上级目录，即chroot_local_user=YES，则该项需配置为YES</span><br><span class="line"># 如果没有配置该项，则要求ftp根目录权限不可写，否则登录时报：500 OOPS错误</span><br><span class="line"># vsftp2.3.5之后版本，该配置项需要手动添加</span><br><span class="line">allow_writeable_chroot=YES</span><br><span class="line"></span><br><span class="line"># 和前面同名配置项一样</span><br><span class="line">chroot_local_user=YES</span><br><span class="line"></span><br><span class="line"># 设置chroot_list_file是否有效</span><br><span class="line">chroot_list_enable=YES</span><br><span class="line"></span><br><span class="line"># 当chroot_list_enable=YES时，该文件生效，该文件需要手动添加，存放用户列表</span><br><span class="line"># 如果所有用户被限制只能访问家目录，禁止访问上级目录（即chroot_local_user=YES）</span><br><span class="line"># 那么该文件内的用户为特权用户，可以不被限制地访问家目录之上的目录</span><br><span class="line"># 反之，如果所有用户都不被限制，都可以访问上级目录，即（chroot_local_user=NO）</span><br><span class="line"># 则该文件内部的用户为被限制的用户，只能访问各自家目录，禁止访问上级目录</span><br><span class="line">chroot_list_file=/etc/vsftpd.chroot_list</span><br><span class="line"></span><br><span class="line"># 设置vsftpd使用utf8编码的文件系统</span><br><span class="line">utf8_filesystem=YES</span><br></pre></td></tr></table></figure>
 <h4 id="4-如果要用root登陆"><a href="#4-如果要用root登陆" class="headerlink" title="4.如果要用root登陆"></a>4.如果要用root登陆</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/ftpusers</span><br></pre></td></tr></table></figure>
 <p>该文件内的用户一律禁止ftp连接，所以去除掉root字段就可以用root登陆ftp了。</p>
 <h4 id="5-下载Filezilla"><a href="#5-下载Filezilla" class="headerlink" title="5.下载Filezilla"></a>5.下载Filezilla</h4><p>这是一个可视化连接ftp的软件，操作十分方便。</p>
-<h5 id="登陆Filezilla"><a href="#登陆Filezilla" class="headerlink" title="登陆Filezilla"></a>登陆Filezilla</h5><p><img src="http://p4sze9l87.bkt.clouddn.com/loginFilella.png" alt="image"></p>
-<h5 id="登陆成功"><a href="#登陆成功" class="headerlink" title="登陆成功"></a>登陆成功</h5><p>当你看见这个画面时，你就可以愉快的往服务器上上传文件啦～<br><img src="http://p4sze9l87.bkt.clouddn.com/SUCCESS.png" alt="image"></p>
+<h5 id="登陆Filezilla"><a href="#登陆Filezilla" class="headerlink" title="登陆Filezilla"></a>登陆Filezilla</h5><p><img src="http://upload-images.jianshu.io/upload_images/13750201-cf1e1cca639692d8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<h5 id="登陆成功"><a href="#登陆成功" class="headerlink" title="登陆成功"></a>登陆成功</h5><p>当你看见这个画面时，你就可以愉快的往服务器上上传文件啦～<br><img src="http://upload-images.jianshu.io/upload_images/13750201-628fd431be8abfbb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
 <p>参考博客：<a href="https://blog.csdn.net/oaix101125/article/details/74454826" target="_blank" rel="noopener">https://blog.csdn.net/oaix101125/article/details/74454826</a></p>
 <hr>
-<h3 id="idea打war包"><a href="#idea打war包" class="headerlink" title="idea打war包"></a>idea打war包</h3><h4 id="点击右上角的图标"><a href="#点击右上角的图标" class="headerlink" title="点击右上角的图标"></a>点击右上角的图标</h4><p><img src="http://p4sze9l87.bkt.clouddn.com/war1.png" alt="image"></p>
-<h4 id="新建artifacts"><a href="#新建artifacts" class="headerlink" title="新建artifacts"></a>新建artifacts</h4><p>Artifacts-加号-Web Application:Archive-Empty<br><img src="http://p4sze9l87.bkt.clouddn.com/war2.png" alt="image"></p>
-<h4 id="填写信息"><a href="#填写信息" class="headerlink" title="填写信息"></a>填写信息</h4><p><img src="http://p4sze9l87.bkt.clouddn.com/war3.png" alt="image"></p>
-<p><img src="http://p4sze9l87.bkt.clouddn.com/war4.png" alt="image"></p>
-<h4 id="打包"><a href="#打包" class="headerlink" title="打包"></a>打包</h4><p>Build-&gt;Build Artifacts<br>选择刚刚新建的artifact<br><br>编译完成后，即可在输出目录下看到该war包。<br><br><img src="http://p4sze9l87.bkt.clouddn.com/war5.png" alt="image"></p>
+<h3 id="idea打war包"><a href="#idea打war包" class="headerlink" title="idea打war包"></a>idea打war包</h3><h4 id="点击右上角的图标"><a href="#点击右上角的图标" class="headerlink" title="点击右上角的图标"></a>点击右上角的图标</h4><p><img src="http://upload-images.jianshu.io/upload_images/13750201-4fa59f7b2ec681da.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<h4 id="新建artifacts"><a href="#新建artifacts" class="headerlink" title="新建artifacts"></a>新建artifacts</h4><p>Artifacts-加号-Web Application:Archive-Empty<br><img src="http://upload-images.jianshu.io/upload_images/13750201-9d91e2328dab70df.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<h4 id="填写信息"><a href="#填写信息" class="headerlink" title="填写信息"></a>填写信息</h4><p><img src="http://upload-images.jianshu.io/upload_images/13750201-697d5f671a104965.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/13750201-c5f5b28066932b6f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<h4 id="打包"><a href="#打包" class="headerlink" title="打包"></a>打包</h4><p>Build-&gt;Build Artifacts<br>选择刚刚新建的artifact<br><br>编译完成后，即可在输出目录下看到该war包。<br><br><img src="http://upload-images.jianshu.io/upload_images/13750201-d888839939fc392a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
 <hr>
-<h3 id="部署war到服务器上"><a href="#部署war到服务器上" class="headerlink" title="部署war到服务器上"></a>部署war到服务器上</h3><h4 id="1-上传文件"><a href="#1-上传文件" class="headerlink" title="1.上传文件"></a>1.上传文件</h4><h5 id="使用FileZilla上传到目录"><a href="#使用FileZilla上传到目录" class="headerlink" title="使用FileZilla上传到目录"></a>使用FileZilla上传到目录</h5><p><img src="http://p4sze9l87.bkt.clouddn.com/upload1.png" alt="image"><br></p>
-<p>若遇见这样的问题<br><img src="http://p4sze9l87.bkt.clouddn.com/upload2.png" alt="image"><br>选择站点管理，更改协议再次登陆。传输文件成功！<br><img src="http://p4sze9l87.bkt.clouddn.com/upload3.png" alt="image"></p>
-<h5 id="拷贝war包"><a href="#拷贝war包" class="headerlink" title="拷贝war包"></a>拷贝war包</h5><p>使用cp或mv将该文件拷贝或yi d到tomcat/webapps文件夹中。</p>
-<p><img src="http://p4sze9l87.bkt.clouddn.com/cpwar.png" alt="image"></p>
+<h3 id="部署war到服务器上"><a href="#部署war到服务器上" class="headerlink" title="部署war到服务器上"></a>部署war到服务器上</h3><h4 id="1-上传文件"><a href="#1-上传文件" class="headerlink" title="1.上传文件"></a>1.上传文件</h4><h5 id="使用FileZilla上传到目录"><a href="#使用FileZilla上传到目录" class="headerlink" title="使用FileZilla上传到目录"></a>使用FileZilla上传到目录</h5><p><img src="http://upload-images.jianshu.io/upload_images/13750201-beb0cf40fb5db055.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"><br></p>
+<p>若遇见这样的问题<br><img src="http://upload-images.jianshu.io/upload_images/13750201-3bae5cd627eec48a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"><br>选择站点管理，更改协议再次登陆。传输文件成功！<br><img src="http://upload-images.jianshu.io/upload_images/13750201-12fb192a0cecc87d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
+<h5 id="拷贝war包"><a href="#拷贝war包" class="headerlink" title="拷贝war包"></a>拷贝war包</h5><p>使用cp或mv将该文件拷贝或移动到tomcat/webapps文件夹中。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/13750201-bd480a7cb52f9814.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
 <p>再重启tomcat 就部署好了.</p>
 <hr>
 <h3 id="导入本地mysql数据库"><a href="#导入本地mysql数据库" class="headerlink" title="导入本地mysql数据库"></a>导入本地mysql数据库</h3><h4 id="1-将数据库导出为-sql文件"><a href="#1-将数据库导出为-sql文件" class="headerlink" title="1.将数据库导出为.sql文件"></a>1.将数据库导出为.sql文件</h4><p>这里我使用的是Sequel pro,一个方便快捷的可视化管理软件。</p>
 <h4 id="2-将-sql文件上传至服务器"><a href="#2-将-sql文件上传至服务器" class="headerlink" title="2.将.sql文件上传至服务器"></a>2.将.sql文件上传至服务器</h4><p>如上传war包步骤一样</p>
 <h4 id="3-登陆mysql-执行sql文件"><a href="#3-登陆mysql-执行sql文件" class="headerlink" title="3.登陆mysql 执行sql文件"></a>3.登陆mysql 执行sql文件</h4><h5 id="登陆"><a href="#登陆" class="headerlink" title="登陆"></a>登陆</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql -uroot -p</span><br></pre></td></tr></table></figure>
 <h5 id="执行sql文件"><a href="#执行sql文件" class="headerlink" title="执行sql文件"></a>执行sql文件</h5><p>ps:这里有个很坑的地方是你需要先新建好sql文件中的数据库，再切换过去才能执行。否则报错。</p>
-<p>没有我们要导入的数据库<br><img src="http://p4sze9l87.bkt.clouddn.com/sql1.png" alt="image"></p>
+<p>没有我们要导入的数据库<br><img src="http://upload-images.jianshu.io/upload_images/13750201-1fc05992883d4626.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
 <p>创建数据库 create database students;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; create database students;</span><br><span class="line">Query OK, 1 row affected (0.00 sec)</span><br></pre></td></tr></table></figure></p>
 <p>切换数据库 use students<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; use students</span><br><span class="line">Database changed</span><br></pre></td></tr></table></figure></p>
 <p>执行sql source /root/students.sql<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; source /root/students.sql</span><br></pre></td></tr></table></figure></p>
@@ -170,6 +464,495 @@
 <h4 id="3-重启"><a href="#3-重启" class="headerlink" title="3.重启"></a>3.重启</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nginx -s reload</span><br></pre></td></tr></table></figure>
 <h4 id="4-验证"><a href="#4-验证" class="headerlink" title="4.验证"></a>4.验证</h4><p>当你访问80端口时显示tomcat的页面，则反代成功。</p>
 <h4 id="5-其他"><a href="#5-其他" class="headerlink" title="5.其他"></a>5.其他</h4><p>卸载nginx<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get remove nginx nginx-common # 卸载删除除了配置文件以外的所有文件。</span><br><span class="line"></span><br><span class="line">sudo apt-get purge nginx nginx-common # 卸载所有东西，包括删除配置文件。</span><br><span class="line"></span><br><span class="line">sudo apt-get autoremove # 在上面命令结束后执行，主要是卸载删除不再被使用的依赖包。</span><br><span class="line"></span><br><span class="line">sudo apt-get remove nginx-full nginx-common #卸载删除nginx两个主要的包。</span><br></pre></td></tr></table></figure></p>
-<p>若apt-get安装失败，出现这样的问题，则是80端口被占用，需要杀掉该端口号再重新安装。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Errors were encountered while processing:</span><br><span class="line"> nginx-core</span><br><span class="line"> nginx</span><br><span class="line">E: Sub-process /usr/bin/dpkg returned an error code (1)</span><br></pre></td></tr></table></figure></p>
+<p>若apt-get安装失败，出现这样的问题，则是80端口被占用，需要杀掉该占用该端口的进程再重新安装。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Errors were encountered while processing:</span><br><span class="line"> nginx-core</span><br><span class="line"> nginx</span><br><span class="line">E: Sub-process /usr/bin/dpkg returned an error code (1)</span><br></pre></td></tr></table></figure></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo netstat -nlp #查看应用占用端口的情况</span><br><span class="line"></span><br><span class="line">sudo kill -9 [占用80的应用的PID] #kill进程</span><br></pre></td></tr></table></figure>
-</article><!-- lincense--><div class="license-wrapper"><p> <span>Author:  </span><a href="https://fengxinyao1.github.io">Fxymine4ever</a></p><p> <span>Link:  </span><a href="https://fengxinyao1.github.io/2018/10/05/阿里云ubuntu-mysql-jdk-tomcat配置javaweb项目打war包部署/">https://fengxinyao1.github.io/2018/10/05/阿里云ubuntu-mysql-jdk-tomcat配置javaweb项目打war包部署/</a></p><p> <span>Copyright:  </span><span>All articles in this blog are licensed under <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/3.0">CC BY-NC-SA 3.0</a> unless stating additionally.</span></p></div><div class="post-paginator"><a class="prevSlogan" href="/2018/11/27/接锅太急？DownloadManager来助力-1/" title="接锅太急？DownloadManager来助力"><span>< PreviousPost</span><br><span class="prevTitle">接锅太急？DownloadManager来助力</span></a><a class="nextSlogan" href="/2018/08/05/JVM类加载-笔记/" title="JVM类加载-笔记"><span>NextPost ></span><br><span class="nextTitle">JVM类加载-笔记</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a href="http://hexo.io"><span>Hexo</span></a><span> | theme </span><a href="https://github.com/Longlongyu/hexo-theme-Cxo"><span>Cxo</span></a></p><i class="fa fa-user"> </i><span id="busuanzi_value_site_uv"></span><span> | </span><i class="fa fa-eye"> </i><span id="busuanzi_value_site_pv"></span></div></footer><!-- catelog--><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>
+      
+    </div>
+    
+    
+    
+
+  
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    Fxymine4ever
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://fengxinyao1.github.io/2018/10/05/阿里云ubuntu-mysql-jdk-tomcat配置javaweb项目打war包部署/" title="阿里云ubuntu mysql+jdk+tomcat配置javaweb项目打war包部署">https://fengxinyao1.github.io/2018/10/05/阿里云ubuntu-mysql-jdk-tomcat配置javaweb项目打war包部署/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux/" rel="tag"># Linux</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/08/05/JVM类加载-笔记/" rel="next" title="JVM类加载-笔记">
+                <i class="fa fa-chevron-left"></i> JVM类加载-笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/27/接锅太急？DownloadManager来助力-1/" rel="prev" title="接锅太急？DownloadManager来助力">
+                接锅太急？DownloadManager来助力 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div class="ds-thread" data-thread-key="2018/10/05/阿里云ubuntu-mysql-jdk-tomcat配置javaweb项目打war包部署/"
+           data-title="阿里云ubuntu mysql+jdk+tomcat配置javaweb项目打war包部署" data-url="https://fengxinyao1.github.io/2018/10/05/阿里云ubuntu-mysql-jdk-tomcat配置javaweb项目打war包部署/">
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+              <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=298 height=52 src="//music.163.com/outchain/player?type=2&id=441532&auto=0&height=32">
+                </iframe>
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+                
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+                
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://fxy.red/avatar.jpeg"
+                alt="Fxymine4ever" />
+            
+              <p class="site-author-name" itemprop="name">Fxymine4ever</p>
+              <p class="site-description motion-element" itemprop="description">从前很慢</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/fengxinyao1" target="_blank" title="GayHub">
+                      
+                        <i class="fa fa-fw fa-GayHub"></i>GayHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://fxy.red" target="_blank" title="主页">
+                      
+                        <i class="fa fa-fw fa-主页"></i>主页</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/xinyao-feng/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-知乎"></i>知乎</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://music.163.com/#/user/home?id=83876284" target="_blank" title="网易云音乐">
+                      
+                        <i class="fa fa-fw fa-网易云音乐"></i>网易云音乐</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.cynthial.cn/" title="Cchanges" target="_blank">Cchanges</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://hosigus.com/" title="Hosigus" target="_blank">Hosigus</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://118.24.175.82/" title="leaf" target="_blank">leaf</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://k4ii.github.io" title="K4ii" target="_blank">K4ii</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://blog.mashiroc.fun/" title="人赢仓仓子" target="_blank">人赢仓仓子</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.fenghaha.com/" title="Fenghaha" target="_blank">Fenghaha</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ubuntu16-04配置mysql-jdk-tomcat-ftp-nginx部署idea的java-web项目"><span class="nav-number">1.</span> <span class="nav-text">ubuntu16.04配置mysql+jdk+tomcat+ftp+nginx部署idea的java web项目</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Mysql安装"><span class="nav-number">1.1.</span> <span class="nav-text">Mysql安装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-更新软件源"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.更新软件源</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-安装"><span class="nav-number">1.1.2.</span> <span class="nav-text">2.安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-查看是否安装成功"><span class="nav-number">1.1.3.</span> <span class="nav-text">3.查看是否安装成功</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-开启远程访问"><span class="nav-number">1.1.4.</span> <span class="nav-text">4.开启远程访问</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-在阿里云安全组内开启3306端口入口"><span class="nav-number">1.1.5.</span> <span class="nav-text">5.在阿里云安全组内开启3306端口入口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-最后"><span class="nav-number">1.1.6.</span> <span class="nav-text">6.最后</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JDK安装"><span class="nav-number">1.2.</span> <span class="nav-text">JDK安装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-下载jdk"><span class="nav-number">1.2.1.</span> <span class="nav-text">1. 下载jdk</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-创建安装目录"><span class="nav-number">1.2.2.</span> <span class="nav-text">2. 创建安装目录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-解压"><span class="nav-number">1.2.3.</span> <span class="nav-text">3. 解压</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-设置环境变量"><span class="nav-number">1.2.4.</span> <span class="nav-text">4. 设置环境变量</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Tomcat安装"><span class="nav-number">1.3.</span> <span class="nav-text">Tomcat安装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-下载文件"><span class="nav-number">1.3.1.</span> <span class="nav-text">1.下载文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-创建安装目录-1"><span class="nav-number">1.3.2.</span> <span class="nav-text">2.创建安装目录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-解压-1"><span class="nav-number">1.3.3.</span> <span class="nav-text">3.解压</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-启动tomcat"><span class="nav-number">1.3.4.</span> <span class="nav-text">4.启动tomcat</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#vsftpd安装"><span class="nav-number">1.4.</span> <span class="nav-text">vsftpd安装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-安装"><span class="nav-number">1.4.1.</span> <span class="nav-text">1.安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-运行"><span class="nav-number">1.4.2.</span> <span class="nav-text">2.运行</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#启动ftpd服务"><span class="nav-number">1.4.2.1.</span> <span class="nav-text">启动ftpd服务</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#停止ftpd服务"><span class="nav-number">1.4.2.2.</span> <span class="nav-text">停止ftpd服务</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#重启ftpd服务"><span class="nav-number">1.4.2.3.</span> <span class="nav-text">重启ftpd服务</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#查看21号端口是否打开"><span class="nav-number">1.4.2.4.</span> <span class="nav-text">查看21号端口是否打开</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#查看当前ftpd运行状态"><span class="nav-number">1.4.2.5.</span> <span class="nav-text">查看当前ftpd运行状态</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-etc-vsftpd-conf-相关配置"><span class="nav-number">1.4.3.</span> <span class="nav-text">3./etc/vsftpd.conf 相关配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-如果要用root登陆"><span class="nav-number">1.4.4.</span> <span class="nav-text">4.如果要用root登陆</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-下载Filezilla"><span class="nav-number">1.4.5.</span> <span class="nav-text">5.下载Filezilla</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#登陆Filezilla"><span class="nav-number">1.4.5.1.</span> <span class="nav-text">登陆Filezilla</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#登陆成功"><span class="nav-number">1.4.5.2.</span> <span class="nav-text">登陆成功</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#idea打war包"><span class="nav-number">1.5.</span> <span class="nav-text">idea打war包</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#点击右上角的图标"><span class="nav-number">1.5.1.</span> <span class="nav-text">点击右上角的图标</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#新建artifacts"><span class="nav-number">1.5.2.</span> <span class="nav-text">新建artifacts</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#填写信息"><span class="nav-number">1.5.3.</span> <span class="nav-text">填写信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#打包"><span class="nav-number">1.5.4.</span> <span class="nav-text">打包</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#部署war到服务器上"><span class="nav-number">1.6.</span> <span class="nav-text">部署war到服务器上</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-上传文件"><span class="nav-number">1.6.1.</span> <span class="nav-text">1.上传文件</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#使用FileZilla上传到目录"><span class="nav-number">1.6.1.1.</span> <span class="nav-text">使用FileZilla上传到目录</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#拷贝war包"><span class="nav-number">1.6.1.2.</span> <span class="nav-text">拷贝war包</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#导入本地mysql数据库"><span class="nav-number">1.7.</span> <span class="nav-text">导入本地mysql数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-将数据库导出为-sql文件"><span class="nav-number">1.7.1.</span> <span class="nav-text">1.将数据库导出为.sql文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-将-sql文件上传至服务器"><span class="nav-number">1.7.2.</span> <span class="nav-text">2.将.sql文件上传至服务器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-登陆mysql-执行sql文件"><span class="nav-number">1.7.3.</span> <span class="nav-text">3.登陆mysql 执行sql文件</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#登陆"><span class="nav-number">1.7.3.1.</span> <span class="nav-text">登陆</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#执行sql文件"><span class="nav-number">1.7.3.2.</span> <span class="nav-text">执行sql文件</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nginx反代80端口到8080"><span class="nav-number">1.8.</span> <span class="nav-text">nginx反代80端口到8080</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-安装nginx"><span class="nav-number">1.8.1.</span> <span class="nav-text">1.安装nginx</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-修改nginx-conf"><span class="nav-number">1.8.2.</span> <span class="nav-text">2.修改nginx.conf</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-重启"><span class="nav-number">1.8.3.</span> <span class="nav-text">3.重启</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-验证"><span class="nav-number">1.8.4.</span> <span class="nav-text">4.验证</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-其他"><span class="nav-number">1.8.5.</span> <span class="nav-text">5.其他</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Fxymine4ever</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">19.6k</span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"Fxymine4ever"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/love.js"></script>
+</body>
+
+</html>
