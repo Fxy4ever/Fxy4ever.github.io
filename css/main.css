@@ -1054,6 +1054,8 @@ pre .javascript .function {
 }
 .tag-cloud a {
   display: inline-block;
+  color: #000 !important;
+  font-size: 15px !important;
   margin: 10px;
 }
 .back-to-top {
@@ -1841,7 +1843,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #85fb6b;
+  background: #a7afff;
 }
 .links-of-blogroll {
   font-size: 13px;
