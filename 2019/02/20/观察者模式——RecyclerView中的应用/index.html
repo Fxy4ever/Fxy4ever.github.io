@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.jpeg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.jpeg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.jpeg?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/favicon.jpeg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="设计模式," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="观察者模式是软件设计模式的一种。在此种模式中，一个目标对象管理所有相依于它的观察者对象，并且在它本身的状态改变时主动发出通知。这通常透过呼叫各观察者所提供的方法来实现。此种模式通常被用来实时事件处理系统。 摘自维基百科  首先,我在这里先提出本文的几个问题  什么是观察者模式? RecyclerView的Adpter.notifyDataSetChanged为什么能刷新界面? RecyclerV">
+<meta name="keywords" content="设计模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="观察者模式——RecyclerView中的应用">
+<meta property="og:url" content="https://fengxinyao1.github.io/2019/02/20/观察者模式——RecyclerView中的应用/index.html">
+<meta property="og:site_name" content="只会摸鱼的程序猿">
+<meta property="og:description" content="观察者模式是软件设计模式的一种。在此种模式中，一个目标对象管理所有相依于它的观察者对象，并且在它本身的状态改变时主动发出通知。这通常透过呼叫各观察者所提供的方法来实现。此种模式通常被用来实时事件处理系统。 摘自维基百科  首先,我在这里先提出本文的几个问题  什么是观察者模式? RecyclerView的Adpter.notifyDataSetChanged为什么能刷新界面? RecyclerV">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-02-20T14:04:59.681Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="观察者模式——RecyclerView中的应用">
+<meta name="twitter:description" content="观察者模式是软件设计模式的一种。在此种模式中，一个目标对象管理所有相依于它的观察者对象，并且在它本身的状态改变时主动发出通知。这通常透过呼叫各观察者所提供的方法来实现。此种模式通常被用来实时事件处理系统。 摘自维基百科  首先,我在这里先提出本文的几个问题  什么是观察者模式? RecyclerView的Adpter.notifyDataSetChanged为什么能刷新界面? RecyclerV">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Fxymine4ever'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://fengxinyao1.github.io/2019/02/20/观察者模式——RecyclerView中的应用/"/>
+
+
+
+
+
+  <title>观察者模式——RecyclerView中的应用 | 只会摸鱼的程序猿</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">只会摸鱼的程序猿</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://fengxinyao1.github.io/2019/02/20/观察者模式——RecyclerView中的应用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Fxymine4ever">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://fxy.red/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="只会摸鱼的程序猿">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">观察者模式——RecyclerView中的应用</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-20T22:03:52+08:00">
+                2019-02-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/02/20/观察者模式——RecyclerView中的应用/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/02/20/观察者模式——RecyclerView中的应用/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  8
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>观察者模式是软件设计模式的一种。在此种模式中，一个目标对象管理所有相依于它的观察者对象，并且在它本身的状态改变时主动发出通知。这通常透过呼叫各观察者所提供的方法来实现。此种模式通常被用来实时事件处理系统。 摘自维基百科</p>
+</blockquote>
+<p>首先,我在这里先提出本文的几个问题</p>
+<ol>
+<li>什么是观察者模式?</li>
+<li><code>RecyclerView</code>的<code>Adpter.notifyDataSetChanged</code>为什么能刷新界面?</li>
+<li><code>RecyclerView</code>的观察者,在哪里被注册和注销的呢?</li>
+</ol>
+<h3 id="什么是观察者模式"><a href="#什么是观察者模式" class="headerlink" title="什么是观察者模式?"></a>什么是观察者模式?</h3><p>可能对于部分初学者来说,还不是很明白观察者模式是什么,那么接下来我会用简单的例子来描述一下观察者模式.</p>
+<h4 id="被观察者-目标对象"><a href="#被观察者-目标对象" class="headerlink" title="被观察者(目标对象)"></a>被观察者(目标对象)</h4><p>负责管理所有在这里注册过的观察者,常常可以通过遍历观察者的集合来呼叫所有的观察者.<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 被观察者</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Observable</span>&lt;<span class="title">T</span>&gt;</span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">register</span><span class="params">(Observer&lt;T&gt; observer)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">unregister</span><span class="params">(Observer&lt;T&gt; observer)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">notifyObserver</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里我们可以将学生系统作为它的具体实现类,学生将在这里被注册<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StudentSystem</span> <span class="keyword">implements</span> <span class="title">Observable</span>&lt;<span class="title">String</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> List&lt;Observer&lt;String&gt;&gt; observers = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//学生(观察者)注册学籍的方法</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">register</span><span class="params">(Observer&lt;String&gt; observer)</span> </span>&#123;</span><br><span class="line">        System.out.println(observer+<span class="string">"注册了学籍"</span>);</span><br><span class="line">        observers.add(observer);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//学生(观察者)注销学籍的方法</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">unregister</span><span class="params">(Observer&lt;String&gt; observer)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(observers.contains(observer))&#123;</span><br><span class="line">            System.out.println(observer+<span class="string">"注销了学籍"</span>);</span><br><span class="line">            observers.remove(observer);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//学生系统的全员广播,通知学生(观察者)</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">notifyObserver</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (Observer&lt;String&gt; observer : observers) &#123;</span><br><span class="line">            observer.update(<span class="string">"系统提示:"</span>+observer+<span class="string">"马上开学了！"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="观察者"><a href="#观察者" class="headerlink" title="观察者"></a>观察者</h4><p>观察者会将联系方式(引用)留给被观察者以便于能很方便通知到它.<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Observer</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">update</span><span class="params">(T msg)</span></span>;<span class="comment">//每个观察者被通知的入口</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>同样,在这里我们将学生作为观察者,则<code>update</code>方法是学生系统向学生通知的途径.<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Student</span> <span class="keyword">implements</span> <span class="title">Observer</span>&lt;<span class="title">String</span>&gt; </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(String msg)</span> </span>&#123;</span><br><span class="line">        System.out.println(msg);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="这样我们就构成了最简单的观察者"><a href="#这样我们就构成了最简单的观察者" class="headerlink" title="这样我们就构成了最简单的观察者"></a>这样我们就构成了最简单的观察者</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Student stu1 = <span class="keyword">new</span> Student();</span><br><span class="line">        Student stu2 = <span class="keyword">new</span> Student();</span><br><span class="line">        Student stu3 = <span class="keyword">new</span> Student();</span><br><span class="line"></span><br><span class="line">        StudentSystem system = <span class="keyword">new</span> StudentSystem();</span><br><span class="line"></span><br><span class="line">        system.register(stu1);</span><br><span class="line">        system.register(stu2);</span><br><span class="line">        system.register(stu3);</span><br><span class="line"></span><br><span class="line">        system.notifyObserver();</span><br><span class="line">        </span><br><span class="line">        system.unregister(stu1);</span><br><span class="line">        system.unregister(stu2);</span><br><span class="line">        system.unregister(stu3);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">输出:</span><br><span class="line">Student@<span class="number">2503</span>dbd3 注册了学籍</span><br><span class="line">Student@<span class="number">4</span>b67cf4d 注册了学籍</span><br><span class="line">Student@<span class="number">7</span>ea987ac 注册了学籍</span><br><span class="line">系统提示: Student@<span class="number">2503</span>dbd3 马上开学了！</span><br><span class="line">系统提示: Student@<span class="number">4</span>b67cf4d 马上开学了！</span><br><span class="line">系统提示: Student@<span class="number">7</span>ea987ac 马上开学了！</span><br><span class="line">Student@<span class="number">2503</span>dbd3 注销了学籍</span><br><span class="line">Student@<span class="number">4</span>b67cf4d 注销了学籍</span><br><span class="line">Student@<span class="number">7</span>ea987ac 注销了学籍</span><br></pre></td></tr></table></figure>
+<h4 id="小小总结一下"><a href="#小小总结一下" class="headerlink" title="小小总结一下"></a>小小总结一下</h4><ul>
+<li>观察者把自己的引用留给了被观察者,便于被观察者使用观察者的方法.</li>
+<li>JDK中自带了观察者模式,不过被观察者<code>(Obeservable)</code>是一个类,不方便使用</li>
+<li>观察者模式在Android中使用得特别多,著名的<code>RecyclerView</code>和<code>BroadcastReceiver</code>等均使用了观察者模式</li>
+</ul>
+<h3 id="回到正题——RecyclerView中的应用"><a href="#回到正题——RecyclerView中的应用" class="headerlink" title="回到正题——RecyclerView中的应用"></a>回到正题——RecyclerView中的应用</h3><p>只要是一个Android开发者,我想每一个人都用过<code>RecyclerView</code>吧!这是Google提供的十分优秀的大量数据展示的新控件,其中的设计十分地精妙,运用了大量的设计模式与编程思想.<br><br><br><br><br>在我去年刚开始学习Andorid的时候,我就一直在想<code>RecyclerView</code>的<code>Adapter</code>为什么调用<code>notifyDataSetChange</code>就能刷新所有的<code>Item</code>呢?由于当时未能养成一种阅读源码的习惯,只能将这个疑惑放下.<br><br><br><br><br>不过接下来,我将带领大家探索一下这个问题的谜底</p>
+<h3 id="RecyclerView的Adpter-notifyDataSetChanged为什么能刷新界面"><a href="#RecyclerView的Adpter-notifyDataSetChanged为什么能刷新界面" class="headerlink" title="RecyclerView的Adpter.notifyDataSetChanged为什么能刷新界面?"></a><code>RecyclerView</code>的<code>Adpter.notifyDataSetChanged</code>为什么能刷新界面?</h3><h4 id="先看看RecyclerView和Adapter的关系"><a href="#先看看RecyclerView和Adapter的关系" class="headerlink" title="先看看RecyclerView和Adapter的关系"></a>先看看<code>RecyclerView</code>和<code>Adapter</code>的关系</h4><p>由于RecyclerView的类实在是太庞大了,有足足7000多行,所以说这里截取小部分.可以看到adapter是RecyclerView中的一个静态内部类<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RecyclerView</span> <span class="keyword">extends</span> <span class="title">ViewGroup</span> <span class="keyword">implements</span> <span class="title">ScrollingView</span>, <span class="title">NestedScrollingChild2</span> </span>&#123;</span><br><span class="line">    <span class="comment">//省略无数代码...</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Adapter</span>&lt;<span class="title">VH</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">ViewHolder</span>&gt; </span>&#123;</span><br><span class="line">            <span class="comment">//这个对象很关键,后文会讲</span></span><br><span class="line">            <span class="keyword">private</span> <span class="keyword">final</span> RecyclerView.AdapterDataObservable mObservable = <span class="keyword">new</span> RecyclerView.AdapterDataObservable();</span><br><span class="line">            <span class="comment">//省略无数代码...</span></span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="直击重点-Adpter-notifyDataSetChanged"><a href="#直击重点-Adpter-notifyDataSetChanged" class="headerlink" title="直击重点:Adpter.notifyDataSetChanged"></a>直击重点:<code>Adpter.notifyDataSetChanged</code></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">notifyDataSetChanged</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.mObservable.notifyChanged();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里调用了<code>mObservable</code>的<code>notifyChanged</code>方法,而mObservable在上面已经给出来了,是<code>RecyclerView.AdapterDataObservable</code>的对象,所以说我们继续深究.</p>
+<h4 id="AdapterDataObservable"><a href="#AdapterDataObservable" class="headerlink" title="AdapterDataObservable"></a>AdapterDataObservable</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">AdapterDataObservable</span> <span class="keyword">extends</span> <span class="title">Observable</span>&lt;<span class="title">RecyclerView</span>.<span class="title">AdapterDataObserver</span>&gt; </span>&#123;</span><br><span class="line">        AdapterDataObservable() &#123;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//...省略部分代码</span></span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">notifyChanged</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="keyword">this</span>.mObservers.size() - <span class="number">1</span>; i &gt;= <span class="number">0</span>; --i) &#123;</span><br><span class="line">                ((RecyclerView.AdapterDataObserver)<span class="keyword">this</span>.mObservers.get(i)).onChanged();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//...省略部分代码</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>显而易见,这是一个JDK提供的<code>Observable</code>的子类,而这个类的内部维护着一个<code>ArrayList</code>组成的集合,用于存储观察者对象.<br><br>所以说,<code>notifyChanged</code>方法里,就是遍历这个被观察者持有的观察者对象,并调用它的<code>onChanged</code>方法</p>
+<h4 id="onChanged"><a href="#onChanged" class="headerlink" title="onChanged"></a>onChanged</h4><p>我们按着ctrl键点进这个方法,发现这是一个抽象静态类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">AdapterDataObserver</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AdapterDataObserver</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onChanged</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onItemRangeChanged</span><span class="params">(<span class="keyword">int</span> positionStart, <span class="keyword">int</span> itemCount)</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onItemRangeChanged</span><span class="params">(<span class="keyword">int</span> positionStart, <span class="keyword">int</span> itemCount, @Nullable Object payload)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.onItemRangeChanged(positionStart, itemCount);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onItemRangeInserted</span><span class="params">(<span class="keyword">int</span> positionStart, <span class="keyword">int</span> itemCount)</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onItemRangeRemoved</span><span class="params">(<span class="keyword">int</span> positionStart, <span class="keyword">int</span> itemCount)</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onItemRangeMoved</span><span class="params">(<span class="keyword">int</span> fromPosition, <span class="keyword">int</span> toPosition, <span class="keyword">int</span> itemCount)</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们顺藤摸瓜,于是找到了它的实现类RecyclerViewDataObserver<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">RecyclerViewDataObserver</span> <span class="keyword">extends</span> <span class="title">RecyclerView</span>.<span class="title">AdapterDataObserver</span> </span>&#123;</span><br><span class="line">        RecyclerViewDataObserver() &#123;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onChanged</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            RecyclerView.<span class="keyword">this</span>.assertNotInLayoutOrScroll((String)<span class="keyword">null</span>);</span><br><span class="line">            RecyclerView.<span class="keyword">this</span>.mState.mStructureChanged = <span class="keyword">true</span>;</span><br><span class="line">            RecyclerView.<span class="keyword">this</span>.processDataSetCompletelyChanged(<span class="keyword">true</span>);</span><br><span class="line">            <span class="keyword">if</span> (!RecyclerView.<span class="keyword">this</span>.mAdapterHelper.hasPendingUpdates()) &#123;</span><br><span class="line">                    RecyclerView.<span class="keyword">this</span>.requestLayout();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//...省略部分代码</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="真相大白-requestLayout"><a href="#真相大白-requestLayout" class="headerlink" title="真相大白:requestLayout()"></a>真相大白:<code>requestLayout()</code></h4><p>在这个实现类中,onChanged的内容就是那么的美丽~终于解除了我学习Android一年以来的心病,就是这个方法就是更新布局的关键<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RecyclerView.<span class="keyword">this</span>.requestLayout();<span class="comment">//请求重新绘制界面</span></span><br></pre></td></tr></table></figure></p>
+<p>最后,我们发现这里调用了View的requestLayout方法,确实是请求重新绘制界面.不过这已经是View相关的内容,与本文无关了.有兴趣的朋友可以继续深入了解<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">requestLayout</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.mInterceptRequestLayoutDepth == <span class="number">0</span> &amp;&amp; !<span class="keyword">this</span>.mLayoutFrozen) &#123;</span><br><span class="line">            <span class="keyword">super</span>.requestLayout();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">this</span>.mLayoutWasDefered = <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="总结一下RecyclerView更新界面"><a href="#总结一下RecyclerView更新界面" class="headerlink" title="总结一下RecyclerView更新界面"></a>总结一下RecyclerView更新界面</h4><p>这里运用了观察者模式,通过被观察者<code>AdapterDataObservable</code>遍历每一个观察者<code>RecyclerViewDataObserver</code>,然后找到它的<code>onChanged()</code>方法,利用<code>requestLayout()</code>更新整个RecyclerView.</p>
+<h3 id="RecyclerView的观察者模式-在哪里被注册的"><a href="#RecyclerView的观察者模式-在哪里被注册的" class="headerlink" title="RecyclerView的观察者模式,在哪里被注册的?"></a><code>RecyclerView</code>的观察者模式,在哪里被注册的?</h3><p>又是这熟悉的一段代码,既然它在Recyclerview的Adapter中,那么观察者模式肯定和Adapter的初始化有着千丝万缕的联系.<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> RecyclerView.AdapterDataObservable mObservable = <span class="keyword">new</span> RecyclerView.AdapterDataObservable();</span><br></pre></td></tr></table></figure></p>
+<h4 id="setAdapter"><a href="#setAdapter" class="headerlink" title="setAdapter"></a>setAdapter</h4><p>于是,我们从最开始的setAdapter方法开始看,毕竟这是Adapter的入口嘛<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setAdapter</span><span class="params">(@Nullable RecyclerView.Adapter adapter)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.setLayoutFrozen(<span class="keyword">false</span>);</span><br><span class="line">    <span class="keyword">this</span>.setAdapterInternal(adapter, <span class="keyword">false</span>, <span class="keyword">true</span>);</span><br><span class="line">    <span class="keyword">this</span>.processDataSetCompletelyChanged(<span class="keyword">false</span>);</span><br><span class="line">    <span class="keyword">this</span>.requestLayout();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在这里,与Adapter相关的只有<code>this.setAdapterInternal(adapter, false, true);</code><br><br>这一行代码,我敢肯定,秘密就在这一行代码中!</p>
+<h4 id="setAdapterInternal"><a href="#setAdapterInternal" class="headerlink" title="setAdapterInternal"></a>setAdapterInternal</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setAdapterInternal</span><span class="params">(@Nullable RecyclerView.Adapter adapter, <span class="keyword">boolean</span> compatibleWithPrevious, <span class="keyword">boolean</span> removeAndRecycleViews)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.mAdapter != <span class="keyword">null</span>) &#123;<span class="comment">//如果recyclerView之前设置过Adapter了</span></span><br><span class="line">        <span class="comment">//注销观察者</span></span><br><span class="line">        <span class="keyword">this</span>.mAdapter.unregisterAdapterDataObserver(<span class="keyword">this</span>.mObserver);</span><br><span class="line">        <span class="keyword">this</span>.mAdapter.onDetachedFromRecyclerView(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!compatibleWithPrevious || removeAndRecycleViews) &#123;</span><br><span class="line">        <span class="keyword">this</span>.removeAndRecycleViews();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">this</span>.mAdapterHelper.reset();</span><br><span class="line">    RecyclerView.Adapter oldAdapter = <span class="keyword">this</span>.mAdapter;</span><br><span class="line">    <span class="keyword">this</span>.mAdapter = adapter;</span><br><span class="line">    <span class="keyword">if</span> (adapter != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="comment">//幸福来得这么突然?</span></span><br><span class="line">        <span class="comment">//注册观察者</span></span><br><span class="line">        adapter.registerAdapterDataObserver(<span class="keyword">this</span>.mObserver);</span><br><span class="line">        adapter.onAttachedToRecyclerView(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.mLayout != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">this</span>.mLayout.onAdapterChanged(oldAdapter, <span class="keyword">this</span>.mAdapter);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">this</span>.mRecycler.onAdapterChanged(oldAdapter, <span class="keyword">this</span>.mAdapter, compatibleWithPrevious);</span><br><span class="line">    <span class="keyword">this</span>.mState.mStructureChanged = <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>幸福来得这么突然?才进入两个方法就找到了关键?<br><br><br>对了,我们看看adapter的方法干了啥!</p>
+<h4 id="registerAdapterDataObserver"><a href="#registerAdapterDataObserver" class="headerlink" title="registerAdapterDataObserver"></a>registerAdapterDataObserver</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerAdapterDataObserver</span><span class="params">(@NonNull RecyclerView.AdapterDataObserver observer)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.mObservable.registerObserver(observer);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public void unregisterAdapterDataObserver(@NonNull RecyclerView.AdapterDataObserver observer) &#123;</span><br><span class="line">    this.mObservable.unregisterObserver(observer);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>原来如此,这个方法果然注销和注册了观察者!</p>
+<h4 id="仍然总结一下下"><a href="#仍然总结一下下" class="headerlink" title="仍然总结一下下"></a>仍然总结一下下</h4><p>在<code>RecyclerView</code>的<code>setAdapter</code>方法中,调用了<code>setAdapterInternal</code>.然后在<code>setAdapterInternal</code>中利用<code>adapter.registerAdapterDataObserver</code>方法注册观察者,利用<code>adapter.unregisterAdapterDataObserver</code>方法注销观察者.</p>
+<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>通过以上的学习,我们已经解答了开头提出的三个问题了,相信大家也学到了不少. 如果有错误的地方欢迎指正.</p>
+
+      
+    </div>
+    
+    
+    
+
+  
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    Fxymine4ever
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://fengxinyao1.github.io/2019/02/20/观察者模式——RecyclerView中的应用/" title="观察者模式——RecyclerView中的应用">https://fengxinyao1.github.io/2019/02/20/观察者模式——RecyclerView中的应用/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/设计模式/" rel="tag"># 设计模式</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/13/谈谈LruCache源码/" rel="next" title="谈谈LruCache源码">
+                <i class="fa fa-chevron-left"></i> 谈谈LruCache源码
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div class="ds-thread" data-thread-key="2019/02/20/观察者模式——RecyclerView中的应用/"
+           data-title="观察者模式——RecyclerView中的应用" data-url="https://fengxinyao1.github.io/2019/02/20/观察者模式——RecyclerView中的应用/">
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+              <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=298 height=52 src="//music.163.com/outchain/player?type=2&id=441532&auto=0&height=32">
+                </iframe>
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+                
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+                
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://fxy.red/avatar.jpeg"
+                alt="Fxymine4ever" />
+            
+              <p class="site-author-name" itemprop="name">Fxymine4ever</p>
+              <p class="site-description motion-element" itemprop="description">从前很慢</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/fengxinyao1" target="_blank" title="GayHub">
+                      
+                        <i class="fa fa-fw fa-GayHub"></i>GayHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://fxy.red" target="_blank" title="主页">
+                      
+                        <i class="fa fa-fw fa-主页"></i>主页</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://juejin.im/user/5af32d10f265da0ba17c82e4" target="_blank" title="掘金">
+                      
+                        <i class="fa fa-fw fa-掘金"></i>掘金</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://music.163.com/#/user/home?id=83876284" target="_blank" title="网易云音乐">
+                      
+                        <i class="fa fa-fw fa-网易云音乐"></i>网易云音乐</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.cynthial.cn/" title="Cchanges" target="_blank">Cchanges</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://hosigus.com/" title="Hosigus" target="_blank">Hosigus</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://118.24.175.82/" title="leaf" target="_blank">leaf</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://k4ii.github.io" title="K4ii" target="_blank">K4ii</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://blog.mashiroc.fun/" title="人赢仓仓子" target="_blank">人赢仓仓子</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.fenghaha.com/" title="Fenghaha" target="_blank">Fenghaha</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是观察者模式"><span class="nav-number">1.</span> <span class="nav-text">什么是观察者模式?</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#被观察者-目标对象"><span class="nav-number">1.1.</span> <span class="nav-text">被观察者(目标对象)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#观察者"><span class="nav-number">1.2.</span> <span class="nav-text">观察者</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#这样我们就构成了最简单的观察者"><span class="nav-number">1.3.</span> <span class="nav-text">这样我们就构成了最简单的观察者</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#小小总结一下"><span class="nav-number">1.4.</span> <span class="nav-text">小小总结一下</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#回到正题——RecyclerView中的应用"><span class="nav-number">2.</span> <span class="nav-text">回到正题——RecyclerView中的应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RecyclerView的Adpter-notifyDataSetChanged为什么能刷新界面"><span class="nav-number">3.</span> <span class="nav-text">RecyclerView的Adpter.notifyDataSetChanged为什么能刷新界面?</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#先看看RecyclerView和Adapter的关系"><span class="nav-number">3.1.</span> <span class="nav-text">先看看RecyclerView和Adapter的关系</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#直击重点-Adpter-notifyDataSetChanged"><span class="nav-number">3.2.</span> <span class="nav-text">直击重点:Adpter.notifyDataSetChanged</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AdapterDataObservable"><span class="nav-number">3.3.</span> <span class="nav-text">AdapterDataObservable</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#onChanged"><span class="nav-number">3.4.</span> <span class="nav-text">onChanged</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#真相大白-requestLayout"><span class="nav-number">3.5.</span> <span class="nav-text">真相大白:requestLayout()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结一下RecyclerView更新界面"><span class="nav-number">3.6.</span> <span class="nav-text">总结一下RecyclerView更新界面</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RecyclerView的观察者模式-在哪里被注册的"><span class="nav-number">4.</span> <span class="nav-text">RecyclerView的观察者模式,在哪里被注册的?</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#setAdapter"><span class="nav-number">4.1.</span> <span class="nav-text">setAdapter</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#setAdapterInternal"><span class="nav-number">4.2.</span> <span class="nav-text">setAdapterInternal</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#registerAdapterDataObserver"><span class="nav-number">4.3.</span> <span class="nav-text">registerAdapterDataObserver</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#仍然总结一下下"><span class="nav-number">4.4.</span> <span class="nav-text">仍然总结一下下</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最后"><span class="nav-number">5.</span> <span class="nav-text">最后</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Fxymine4ever</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">23.8k</span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"Fxymine4ever"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/love.js"></script>
+</body>
+
+</html>
