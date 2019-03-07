@@ -395,41 +395,15 @@
 
       
         
-          
-            <h2 id="Android内存泄漏"><a href="#Android内存泄漏" class="headerlink" title="Android内存泄漏"></a>Android内存泄漏</h2><blockquote>
-<p>首先我们提出一个问题，什么是内存泄漏? 内存泄漏，通俗得来讲就是“没有用的对象无法被回收”<br><br><br>然后我们再提出一个问题，内存泄露会导致什么情况？<br><br>肯定是内存溢出，然后程序崩溃啊！</p>
-</blockquote>
-<h3 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h3><p>相信初学者可能不太清楚内存溢出和内存泄漏的区别。</p>
-<ul>
-<li>内存溢出：程序使用的空间大于原本系统给它申请的空间。</li>
-<li>内存泄漏：在new了对象之后，没有使用这个对象了，但是又没有被回收，一直占用着内存。</li>
-</ul>
-<h3 id="储备知识"><a href="#储备知识" class="headerlink" title="储备知识"></a>储备知识</h3><p>要想了解内存泄露的知识，首先我们要清楚以下的知识点</p>
-<ul>
-<li>Java的GC(Garbage Collection，垃圾回收)机制。</li>
-<li>Java的内存管理机制<br><br><br>详情可以见 <a href="https://blog.fxy.red/2019/03/08/浅谈垃圾回收算法/" target="_blank" rel="noopener">浅谈垃圾回收算法</a><h3 id="简单判断"><a href="#简单判断" class="headerlink" title="简单判断"></a>简单判断</h3>如何判断，只用记住一点：A类实例引用B类实例，而A类实例的生命周期长于B类实例的生命周期。</li>
-</ul>
-<h3 id="泄漏场景"><a href="#泄漏场景" class="headerlink" title="泄漏场景"></a>泄漏场景</h3><p>在Android开发中，内存泄漏的地方还是挺多的，有时候稍不注意就写出了一个内存泄漏的代码。所以说我们要熟记哪些地方容易发生内存泄漏，在代码Review的情况下很容易检查出来。</p>
-<h4 id="单例引起的内存泄漏"><a href="#单例引起的内存泄漏" class="headerlink" title="单例引起的内存泄漏"></a>单例引起的内存泄漏</h4><p>单例模式使用的地方非常多，它的生命周期常常伴随着App的一生，所以说也十分容易造成内存泄漏。<br><br><br>例如单例模式中引用Activity的Context，而单例模式的生命周期长于Activity。这里单例模式引用Activity的实例，当Activity被销毁，Activity无法被回收，造成内存泄露。<br><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Single</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> Single instance;</span><br><span class="line">  <span class="keyword">private</span> Context context;</span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="title">Single</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.context = context;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Single <span class="title">getInstance</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</span><br><span class="line">        instance = <span class="keyword">new</span> Single(context);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> instance;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>值得一提的是，如果这里引用的Application的Context，将无任何影响。因为Application的生命周期与单例模式同样长。</p>
-<h4 id="集合的内存泄漏"><a href="#集合的内存泄漏" class="headerlink" title="集合的内存泄漏"></a>集合的内存泄漏</h4><p>在静态集合里面添加对象，添加完成之后该集合将会一直引用此对象，该对象无法被释放。（不过我们也写不出这样沙雕的代码来！<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">static List&lt;Object&gt; objectList = new ArrayList&lt;&gt;();</span><br><span class="line">   for (int i = 0; i &lt; 10; i++) &#123;</span><br><span class="line">       Object obj = new Object();</span><br><span class="line">       objectList.add(obj);</span><br><span class="line">       obj = null;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
-<p>解决方法：在使用完该集合之后，将集合清空。</p>
-<h4 id="匿名内部类以及非静态内部类"><a href="#匿名内部类以及非静态内部类" class="headerlink" title="匿名内部类以及非静态内部类"></a>匿名内部类以及非静态内部类</h4><p>特点：匿名类和非静态内部类都持有外部类的引用</p>
-<h5 id="匿名内部类"><a href="#匿名内部类" class="headerlink" title="匿名内部类"></a>匿名内部类</h5><h6 id="Handler泄漏"><a href="#Handler泄漏" class="headerlink" title="Handler泄漏"></a>Handler泄漏</h6><p>匿名内部类引起的内存泄露，最典型的例子就是Handler泄漏。当Handler的消息没有发送完毕，Activity就被销毁了，此时Activity无法被即时回收。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public class MainActivity extends Activity&#123;</span><br><span class="line">    </span><br><span class="line">    @SuppressLint(&quot;HandlerLeak&quot;)</span><br><span class="line">    private Handler handler = new Handler() &#123;</span><br><span class="line">        @Override</span><br><span class="line">        public void handleMessage(Message msg) &#123;</span><br><span class="line">           //do something...</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    </span><br><span class="line">    @Override</span><br><span class="line">    public void onCreate(Bundle savedInstanceState)&#123;</span><br><span class="line">        super.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>如何解决Handler泄漏呢？我们用static修饰Handler，这样Hanlder的生命周期就与Activity无关了。如果想引用Activity实例，这里可以用一个弱引用来获取。或者可以在Activity 的onDestroy() 方法中移除所有的消息 handler.removeCallbacksAndMessages(null);<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">public class MainActivity extends Activity&#123;</span><br><span class="line">    private final MyHandler handler = new MyHandler(this);</span><br><span class="line">    </span><br><span class="line">    @Override</span><br><span class="line">    public void onCreate(Bundle savedInstanceState)&#123;</span><br><span class="line">        super.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    private static class MyHandler extends Handler &#123;</span><br><span class="line">        private final WeakReference&lt;MainActivity&gt; mActivity;</span><br><span class="line"></span><br><span class="line">        public MyHandler(MainActivity activity) &#123;</span><br><span class="line">            mActivity = new WeakReference&lt;MainActivity&gt;(activity);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        public void handleMessage(Message msg) &#123;</span><br><span class="line">          MainActivity activity = mActivity.get();</span><br><span class="line">          if (activity != null) &#123;</span><br><span class="line">            // ...</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h6 id="Thread泄漏"><a href="#Thread泄漏" class="headerlink" title="Thread泄漏"></a>Thread泄漏</h6><p>在Activity中new Thread时，如果在子线程做耗时操作，当Activity被销毁后，子线程的工作并未完成，此时会内存泄漏。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public class MainActivity extends Activity&#123;</span><br><span class="line">    </span><br><span class="line">    @Override</span><br><span class="line">    public void onCreate(Bundle savedInstanceState)&#123;</span><br><span class="line">        super.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">        </span><br><span class="line">        new Thread(new Runnable() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void run() &#123;</span><br><span class="line">                try &#123;</span><br><span class="line">                    Thread.sleep(100000);</span><br><span class="line">                &#125; catch (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>这里同样可以继承 Thread 实现静态内部类来解决。</p>
-<h4 id="static修饰的成员变量"><a href="#static修饰的成员变量" class="headerlink" title="static修饰的成员变量"></a>static修饰的成员变量</h4><p>如果成员变量被声明为 static，其生命周期将与整个app进程生命周期一样。</p>
-<h4 id="Stream未关闭"><a href="#Stream未关闭" class="headerlink" title="Stream未关闭"></a>Stream未关闭</h4><p>在调用了流之后，一定要记得关闭流。用到流的地方一般都是文件操作，虚拟机无法通过垃圾回收来释放这些资源。</p>
-<h4 id="其他泄漏"><a href="#其他泄漏" class="headerlink" title="其他泄漏"></a>其他泄漏</h4><p>例如service忘记解除绑定，broadcastReceiver忘记解除订阅，EventBus忘记解除订阅等。</p>
-<h3 id="常用的检测内存泄漏的工具"><a href="#常用的检测内存泄漏的工具" class="headerlink" title="常用的检测内存泄漏的工具"></a>常用的检测内存泄漏的工具</h3><p>光凭肉眼我们其实只能找出比较明显的内存泄露点，还有许多隐藏得比较深的内存泄露。那么我们如何找到这些点呢？当然是利用工具。<br><br></p>
-<ul>
-<li><a href="https://developer.android.google.cn/studio/write/lint.html" target="_blank" rel="noopener">Android Lint</a>：Android Studio提供的代码扫描分析工具</li>
-<li><a href="https://github.com/square/leakcanary" target="_blank" rel="noopener">Leakcanary</a>： Square 公司开源的「Android 和 Java 的内存泄漏检测库」</li>
-</ul>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>在Android系统中，每个App最多能分配大约只有100-200MB的内存空间，因为内存不够，溢出而引起的程序崩溃还是不在少数。所以说，日常开发中还是要千万注意内存泄露。</p>
-
-          
+          <h2 id="Android内存泄漏"><a href="#Android内存泄漏" class="headerlink" title="Android内存泄漏"></a>Android内存泄漏</h2><blockquote>
+<p>首先我们提出一个问题，什么是内存泄漏? 内存泄漏，通俗得来讲就是“没有用的对象无法被回收”<br><br><br>然后我们再提出一个问题，内存泄露会导致什么情况？<br><br>肯定是内存溢出，然后程序崩溃啊！<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/03/08/Android内存泄漏/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -610,49 +584,15 @@
 
       
         
-          
-            <h2 id="浅谈垃圾回收算法"><a href="#浅谈垃圾回收算法" class="headerlink" title="浅谈垃圾回收算法"></a>浅谈垃圾回收算法</h2><blockquote>
-<p>首先给大家讲一个梗，为什么Java程序员越来越多，而C++程序员越来越少呢？—— 那还不是因为不用管理内存啊</p>
-</blockquote>
-<p>在C++中，自己new的对象，在不用的时候需要手动释放。而在Java里，你可以释放你的双手，将这项工作交给JVM自己管理。在JVM里面，这种机制叫做垃圾回收(Garbage Collection)机制。</p>
-<h3 id="Java内存管理"><a href="#Java内存管理" class="headerlink" title="Java内存管理"></a>Java内存管理</h3><p>Java的变量一共存储在三个地方、方法区、堆、栈</p>
-<h4 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h4><p>主要存放常量，静态常量、常量池，在程序编译的时候，这块内存就已经被分配出来了，伴随程序的一生。</p>
-<h4 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h4><p>是JVM管理的内存最大的一块，存放所有的实例对象，也是垃圾收集器管理的主要区域。也称为“GC堆”</p>
-<h4 id="栈"><a href="#栈" class="headerlink" title="栈"></a>栈</h4><p>当方法被执行的时候，方法内部的局部变量就会被存储在栈里，当方法执行完毕的时候，刚刚存储的局部变量会被自动释放。</p>
-<h3 id="回收流程"><a href="#回收流程" class="headerlink" title="回收流程"></a>回收流程</h3><ol>
-<li>首先会判断对象是否存活</li>
-<li>利用回收算法对对象进行回收</li>
-</ol>
-<h3 id="如何判断对象是否存活？"><a href="#如何判断对象是否存活？" class="headerlink" title="如何判断对象是否存活？"></a>如何判断对象是否存活？</h3><p>前面说到垃圾收集器管理的是堆，在回收之前，通常需要判断这个对象是否是存活的。</p>
-<h4 id="引用计数法"><a href="#引用计数法" class="headerlink" title="引用计数法"></a>引用计数法</h4><p>遍历对象，当这个对象被其他对象引用的时候计数器就加1，当引用失效的时候，计数器减1。当对象的计数器为0时，则表示该对象没有被引用。这种方法效率很高，但是无法解决互相引用的问题。因此主流JVM都未采用这种方法。</p>
-<h4 id="可达性分析"><a href="#可达性分析" class="headerlink" title="可达性分析"></a>可达性分析</h4><p>这一算法的思想是从GC Roots作为起始点，从这些节点往下搜索，搜索的路径叫做引用链，当一个对象没有任何引用链可以到GC ROOT的时候，则证明该对象是不可用的。一般想要宣告一个对象死亡，至少要经历两次标记，即标记-筛选-标记。<br><img src="https://upload-images.jianshu.io/upload_images/3985563-5865f6922a28a9fd.png?imageMogr2/auto-orient/strip|imageView2/2/w/1240" alt="image"></p>
-<h3 id="垃圾回收算法"><a href="#垃圾回收算法" class="headerlink" title="垃圾回收算法"></a>垃圾回收算法</h3><h4 id="标记-清除"><a href="#标记-清除" class="headerlink" title="标记-清除"></a>标记-清除</h4><h5 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h5><ol>
-<li>标记出所有需要回收的对象</li>
-<li>清除所有被标记的对象</li>
-</ol>
-<p>不足：</p>
-<ol>
-<li>清除和标记两个效率都不高。</li>
-<li>会产生大量的内存碎片，会导致在分配较大对象的时候，如果找不到足够的空间会再次清除。</li>
-</ol>
-<p><img src="https://upload-images.jianshu.io/upload_images/3985563-1b31d5ebe8dec659.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
-<h4 id="复制算法"><a href="#复制算法" class="headerlink" title="复制算法"></a>复制算法</h4><h5 id="过程："><a href="#过程：" class="headerlink" title="过程："></a>过程：</h5><p>将可用内存分为两块，每次只使用其中的一块。一块内存使用完的时候，将存活下来的对象复制到另一块中，再清除这一块内存。这样就没什么内存碎片可言了。</p>
-<h5 id="优点："><a href="#优点：" class="headerlink" title="优点："></a>优点：</h5><p>效率高，解决了内存碎片的问题。</p>
-<h5 id="缺点：只能使用一半的空间。"><a href="#缺点：只能使用一半的空间。" class="headerlink" title="缺点：只能使用一半的空间。"></a>缺点：只能使用一半的空间。</h5><p><img src="https://upload-images.jianshu.io/upload_images/3985563-1b7d8f53a44cdfdb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"><br>不过现代虚拟机几乎都不是1:1分配空间，因为大部分都对象的生命周期都不长。例如HotSpot虚拟机，默认的Eden和Survivor的大小比例是8:1。</p>
-<h4 id="标记-—-整理算法"><a href="#标记-—-整理算法" class="headerlink" title="标记 — 整理算法"></a>标记 — 整理算法</h4><p>复制-收集算法，在对象存活率高的情况下，要进行多次复制，效率比较低。所以说为此提出了“标记-整理”算法。</p>
-<h5 id="过程：-1"><a href="#过程：-1" class="headerlink" title="过程："></a>过程：</h5><p>标记过程同上，然后让所有存活的对象移动到另一端，然后清理掉边界外的内存。<br><img src="https://upload-images.jianshu.io/upload_images/3985563-1bd60604e0c0f46a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image"></p>
-<h4 id="分代收集算法"><a href="#分代收集算法" class="headerlink" title="分代收集算法"></a>分代收集算法</h4><p>分代收集算法比较常见，一般把堆分为新生代和老年代，这样可以根据各个年代的特点采用适当的算法。</p>
-<ul>
-<li>新生代：新生代会有大批对象死去，少量对象存活。适合复制算法。</li>
-<li>老年代：老年代中对象存活率较高，没有额外 空间来分配担保。所以说适合采用标记-清除 或 标记-整理算法。<br> ps：空间分配担保是用来检测老年代最大可用的连续空间是否大于新生代所有活着的对象的总空间。</li>
-</ul>
-<h3 id="引用类型"><a href="#引用类型" class="headerlink" title="引用类型"></a>引用类型</h3><p>在JDK1.2之后，Java对引用的概念进行了扩充，将引用分为强引用（Strong Reference）、软引用（Soft Reference）、弱引用（Weak Reference）、虚引用（Phantom Reference）四种，这四种引用强度依次逐渐减弱。</p>
-<h4 id="强引用-Strong-reference"><a href="#强引用-Strong-reference" class="headerlink" title="强引用(Strong reference)"></a>强引用(Strong reference)</h4><p>就是指在程序代码之中普遍存在的，例如new出来的对象，只要强引用还在，该对象就不会被回收。</p>
-<h4 id="软引用-Soft-Reference"><a href="#软引用-Soft-Reference" class="headerlink" title="软引用(Soft Reference)"></a>软引用(Soft Reference)</h4><p>用来描述一些还有用但并非必须的对象。在内存即将溢出之前，垃圾收集器会将这些对象进行回收。</p>
-<h4 id="弱引用-Weak-Reference"><a href="#弱引用-Weak-Reference" class="headerlink" title="弱引用(Weak Reference)"></a>弱引用(Weak Reference)</h4><p>用户描述非必须对象的。无论当前内存是否足够，随时都有可能被回收。</p>
-<h4 id="虚引用-Phantom-Reference"><a href="#虚引用-Phantom-Reference" class="headerlink" title="虚引用(Phantom Reference)"></a>虚引用(Phantom Reference)</h4><p>虚引用不会影响该对象都生命周期，只会在该对象被回收的适合获得一个系统通知。</p>
-
-          
+          <h2 id="浅谈垃圾回收算法"><a href="#浅谈垃圾回收算法" class="headerlink" title="浅谈垃圾回收算法"></a>浅谈垃圾回收算法</h2><blockquote>
+<p>首先给大家讲一个梗，为什么Java程序员越来越多，而C++程序员越来越少呢？—— 那还不是因为不用管理内存啊<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/03/08/浅谈垃圾回收算法/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>

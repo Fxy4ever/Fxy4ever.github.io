@@ -79,22 +79,22 @@
 
 
 
-<meta name="description" content="浅谈垃圾回收算法 首先给大家讲一个梗，为什么Java程序员越来越多，而C++程序员越来越少呢？—— 那还不是因为不用管理内存啊  在C++中，自己new的对象，在不用的时候需要手动释放。而在Java里，你可以释放你的双手，将这项工作交给JVM自己管理。在JVM里面，这种机制叫做垃圾回收(Garbage Collection)机制。 Java内存管理Java的变量一共存储在三个地方、方法区、堆、栈">
+<meta name="description" content="浅谈垃圾回收算法 首先给大家讲一个梗，为什么Java程序员越来越多，而C++程序员越来越少呢？—— 那还不是因为不用管理内存啊">
 <meta name="keywords" content="JVM">
 <meta property="og:type" content="article">
 <meta property="og:title" content="浅谈垃圾回收算法">
 <meta property="og:url" content="https://Fxy4ever.github.io/2019/03/08/浅谈垃圾回收算法/index.html">
 <meta property="og:site_name" content="只会摸鱼的程序猿">
-<meta property="og:description" content="浅谈垃圾回收算法 首先给大家讲一个梗，为什么Java程序员越来越多，而C++程序员越来越少呢？—— 那还不是因为不用管理内存啊  在C++中，自己new的对象，在不用的时候需要手动释放。而在Java里，你可以释放你的双手，将这项工作交给JVM自己管理。在JVM里面，这种机制叫做垃圾回收(Garbage Collection)机制。 Java内存管理Java的变量一共存储在三个地方、方法区、堆、栈">
+<meta property="og:description" content="浅谈垃圾回收算法 首先给大家讲一个梗，为什么Java程序员越来越多，而C++程序员越来越少呢？—— 那还不是因为不用管理内存啊">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3985563-5865f6922a28a9fd.png?imageMogr2/auto-orient/strip|imageView2/2/w/1240">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3985563-1b31d5ebe8dec659.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3985563-1b7d8f53a44cdfdb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3985563-1bd60604e0c0f46a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2019-03-07T17:20:34.670Z">
+<meta property="og:updated_time" content="2019-03-07T17:25:20.396Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="浅谈垃圾回收算法">
-<meta name="twitter:description" content="浅谈垃圾回收算法 首先给大家讲一个梗，为什么Java程序员越来越多，而C++程序员越来越少呢？—— 那还不是因为不用管理内存啊  在C++中，自己new的对象，在不用的时候需要手动释放。而在Java里，你可以释放你的双手，将这项工作交给JVM自己管理。在JVM里面，这种机制叫做垃圾回收(Garbage Collection)机制。 Java内存管理Java的变量一共存储在三个地方、方法区、堆、栈">
+<meta name="twitter:description" content="浅谈垃圾回收算法 首先给大家讲一个梗，为什么Java程序员越来越多，而C++程序员越来越少呢？—— 那还不是因为不用管理内存啊">
 <meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/3985563-5865f6922a28a9fd.png?imageMogr2/auto-orient/strip|imageView2/2/w/1240">
 
 
@@ -399,9 +399,8 @@
 
       
         <h2 id="浅谈垃圾回收算法"><a href="#浅谈垃圾回收算法" class="headerlink" title="浅谈垃圾回收算法"></a>浅谈垃圾回收算法</h2><blockquote>
-<p>首先给大家讲一个梗，为什么Java程序员越来越多，而C++程序员越来越少呢？—— 那还不是因为不用管理内存啊</p>
+<p>首先给大家讲一个梗，为什么Java程序员越来越多，而C++程序员越来越少呢？—— 那还不是因为不用管理内存啊<br><a id="more"></a><br>在C++中，自己new的对象，在不用的时候需要手动释放。而在Java里，你可以释放你的双手，将这项工作交给JVM自己管理。在JVM里面，这种机制叫做垃圾回收(Garbage Collection)机制。</p>
 </blockquote>
-<p>在C++中，自己new的对象，在不用的时候需要手动释放。而在Java里，你可以释放你的双手，将这项工作交给JVM自己管理。在JVM里面，这种机制叫做垃圾回收(Garbage Collection)机制。</p>
 <h3 id="Java内存管理"><a href="#Java内存管理" class="headerlink" title="Java内存管理"></a>Java内存管理</h3><p>Java的变量一共存储在三个地方、方法区、堆、栈</p>
 <h4 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h4><p>主要存放常量，静态常量、常量池，在程序编译的时候，这块内存就已经被分配出来了，伴随程序的一生。</p>
 <h4 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h4><p>是JVM管理的内存最大的一块，存放所有的实例对象，也是垃圾收集器管理的主要区域。也称为“GC堆”</p>
