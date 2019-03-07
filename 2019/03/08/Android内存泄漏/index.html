@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.jpeg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.jpeg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.jpeg?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/favicon.jpeg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Android," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Android内存泄漏 首先我们提出一个问题，什么是内存泄漏? 内存泄漏，通俗得来讲就是“没有用的对象无法被回收”然后我们再提出一个问题，内存泄露会导致什么情况？肯定是内存溢出，然后程序崩溃啊！  区别相信初学者可能不太清楚内存溢出和内存泄漏的区别。  内存溢出：程序使用的空间大于原本系统给它申请的空间。 内存泄漏：在new了对象之后，没有使用这个对象了，但是又没有被回收，一直占用着内存。  储备">
+<meta name="keywords" content="Android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android内存泄漏">
+<meta property="og:url" content="https://Fxy4ever.github.io/2019/03/08/Android内存泄漏/index.html">
+<meta property="og:site_name" content="只会摸鱼的程序猿">
+<meta property="og:description" content="Android内存泄漏 首先我们提出一个问题，什么是内存泄漏? 内存泄漏，通俗得来讲就是“没有用的对象无法被回收”然后我们再提出一个问题，内存泄露会导致什么情况？肯定是内存溢出，然后程序崩溃啊！  区别相信初学者可能不太清楚内存溢出和内存泄漏的区别。  内存溢出：程序使用的空间大于原本系统给它申请的空间。 内存泄漏：在new了对象之后，没有使用这个对象了，但是又没有被回收，一直占用着内存。  储备">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-03-07T17:22:19.100Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android内存泄漏">
+<meta name="twitter:description" content="Android内存泄漏 首先我们提出一个问题，什么是内存泄漏? 内存泄漏，通俗得来讲就是“没有用的对象无法被回收”然后我们再提出一个问题，内存泄露会导致什么情况？肯定是内存溢出，然后程序崩溃啊！  区别相信初学者可能不太清楚内存溢出和内存泄漏的区别。  内存溢出：程序使用的空间大于原本系统给它申请的空间。 内存泄漏：在new了对象之后，没有使用这个对象了，但是又没有被回收，一直占用着内存。  储备">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Fxymine4ever'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://Fxy4ever.github.io/2019/03/08/Android内存泄漏/"/>
+
+
+
+
+
+  <title>Android内存泄漏 | 只会摸鱼的程序猿</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">只会摸鱼的程序猿</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://Fxy4ever.github.io/2019/03/08/Android内存泄漏/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Fxymine4ever">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://fxy.red/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="只会摸鱼的程序猿">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android内存泄漏</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-08T01:18:05+08:00">
+                2019-03-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/03/08/Android内存泄漏/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/03/08/Android内存泄漏/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.3k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  5
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Android内存泄漏"><a href="#Android内存泄漏" class="headerlink" title="Android内存泄漏"></a>Android内存泄漏</h2><blockquote>
+<p>首先我们提出一个问题，什么是内存泄漏? 内存泄漏，通俗得来讲就是“没有用的对象无法被回收”<br><br><br>然后我们再提出一个问题，内存泄露会导致什么情况？<br><br>肯定是内存溢出，然后程序崩溃啊！</p>
+</blockquote>
+<h3 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h3><p>相信初学者可能不太清楚内存溢出和内存泄漏的区别。</p>
+<ul>
+<li>内存溢出：程序使用的空间大于原本系统给它申请的空间。</li>
+<li>内存泄漏：在new了对象之后，没有使用这个对象了，但是又没有被回收，一直占用着内存。</li>
+</ul>
+<h3 id="储备知识"><a href="#储备知识" class="headerlink" title="储备知识"></a>储备知识</h3><p>要想了解内存泄露的知识，首先我们要清楚以下的知识点</p>
+<ul>
+<li>Java的GC(Garbage Collection，垃圾回收)机制。</li>
+<li>Java的内存管理机制<br><br><br>详情可以见 <a href="https://blog.fxy.red/2019/03/08/浅谈垃圾回收算法/" target="_blank" rel="noopener">浅谈垃圾回收算法</a><h3 id="简单判断"><a href="#简单判断" class="headerlink" title="简单判断"></a>简单判断</h3>如何判断，只用记住一点：A类实例引用B类实例，而A类实例的生命周期长于B类实例的生命周期。</li>
+</ul>
+<h3 id="泄漏场景"><a href="#泄漏场景" class="headerlink" title="泄漏场景"></a>泄漏场景</h3><p>在Android开发中，内存泄漏的地方还是挺多的，有时候稍不注意就写出了一个内存泄漏的代码。所以说我们要熟记哪些地方容易发生内存泄漏，在代码Review的情况下很容易检查出来。</p>
+<h4 id="单例引起的内存泄漏"><a href="#单例引起的内存泄漏" class="headerlink" title="单例引起的内存泄漏"></a>单例引起的内存泄漏</h4><p>单例模式使用的地方非常多，它的生命周期常常伴随着App的一生，所以说也十分容易造成内存泄漏。<br><br><br>例如单例模式中引用Activity的Context，而单例模式的生命周期长于Activity。这里单例模式引用Activity的实例，当Activity被销毁，Activity无法被回收，造成内存泄露。<br><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Single</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> Single instance;</span><br><span class="line">  <span class="keyword">private</span> Context context;</span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="title">Single</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.context = context;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Single <span class="title">getInstance</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</span><br><span class="line">        instance = <span class="keyword">new</span> Single(context);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> instance;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>值得一提的是，如果这里引用的Application的Context，将无任何影响。因为Application的生命周期与单例模式同样长。</p>
+<h4 id="集合的内存泄漏"><a href="#集合的内存泄漏" class="headerlink" title="集合的内存泄漏"></a>集合的内存泄漏</h4><p>在静态集合里面添加对象，添加完成之后该集合将会一直引用此对象，该对象无法被释放。（不过我们也写不出这样沙雕的代码来！<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">static List&lt;Object&gt; objectList = new ArrayList&lt;&gt;();</span><br><span class="line">   for (int i = 0; i &lt; 10; i++) &#123;</span><br><span class="line">       Object obj = new Object();</span><br><span class="line">       objectList.add(obj);</span><br><span class="line">       obj = null;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>解决方法：在使用完该集合之后，将集合清空。</p>
+<h4 id="匿名内部类以及非静态内部类"><a href="#匿名内部类以及非静态内部类" class="headerlink" title="匿名内部类以及非静态内部类"></a>匿名内部类以及非静态内部类</h4><p>特点：匿名类和非静态内部类都持有外部类的引用</p>
+<h5 id="匿名内部类"><a href="#匿名内部类" class="headerlink" title="匿名内部类"></a>匿名内部类</h5><h6 id="Handler泄漏"><a href="#Handler泄漏" class="headerlink" title="Handler泄漏"></a>Handler泄漏</h6><p>匿名内部类引起的内存泄露，最典型的例子就是Handler泄漏。当Handler的消息没有发送完毕，Activity就被销毁了，此时Activity无法被即时回收。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public class MainActivity extends Activity&#123;</span><br><span class="line">    </span><br><span class="line">    @SuppressLint(&quot;HandlerLeak&quot;)</span><br><span class="line">    private Handler handler = new Handler() &#123;</span><br><span class="line">        @Override</span><br><span class="line">        public void handleMessage(Message msg) &#123;</span><br><span class="line">           //do something...</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    </span><br><span class="line">    @Override</span><br><span class="line">    public void onCreate(Bundle savedInstanceState)&#123;</span><br><span class="line">        super.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如何解决Handler泄漏呢？我们用static修饰Handler，这样Hanlder的生命周期就与Activity无关了。如果想引用Activity实例，这里可以用一个弱引用来获取。或者可以在Activity 的onDestroy() 方法中移除所有的消息 handler.removeCallbacksAndMessages(null);<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">public class MainActivity extends Activity&#123;</span><br><span class="line">    private final MyHandler handler = new MyHandler(this);</span><br><span class="line">    </span><br><span class="line">    @Override</span><br><span class="line">    public void onCreate(Bundle savedInstanceState)&#123;</span><br><span class="line">        super.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    private static class MyHandler extends Handler &#123;</span><br><span class="line">        private final WeakReference&lt;MainActivity&gt; mActivity;</span><br><span class="line"></span><br><span class="line">        public MyHandler(MainActivity activity) &#123;</span><br><span class="line">            mActivity = new WeakReference&lt;MainActivity&gt;(activity);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        public void handleMessage(Message msg) &#123;</span><br><span class="line">          MainActivity activity = mActivity.get();</span><br><span class="line">          if (activity != null) &#123;</span><br><span class="line">            // ...</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h6 id="Thread泄漏"><a href="#Thread泄漏" class="headerlink" title="Thread泄漏"></a>Thread泄漏</h6><p>在Activity中new Thread时，如果在子线程做耗时操作，当Activity被销毁后，子线程的工作并未完成，此时会内存泄漏。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public class MainActivity extends Activity&#123;</span><br><span class="line">    </span><br><span class="line">    @Override</span><br><span class="line">    public void onCreate(Bundle savedInstanceState)&#123;</span><br><span class="line">        super.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">        </span><br><span class="line">        new Thread(new Runnable() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void run() &#123;</span><br><span class="line">                try &#123;</span><br><span class="line">                    Thread.sleep(100000);</span><br><span class="line">                &#125; catch (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里同样可以继承 Thread 实现静态内部类来解决。</p>
+<h4 id="static修饰的成员变量"><a href="#static修饰的成员变量" class="headerlink" title="static修饰的成员变量"></a>static修饰的成员变量</h4><p>如果成员变量被声明为 static，其生命周期将与整个app进程生命周期一样。</p>
+<h4 id="Stream未关闭"><a href="#Stream未关闭" class="headerlink" title="Stream未关闭"></a>Stream未关闭</h4><p>在调用了流之后，一定要记得关闭流。用到流的地方一般都是文件操作，虚拟机无法通过垃圾回收来释放这些资源。</p>
+<h4 id="其他泄漏"><a href="#其他泄漏" class="headerlink" title="其他泄漏"></a>其他泄漏</h4><p>例如service忘记解除绑定，broadcastReceiver忘记解除订阅，EventBus忘记解除订阅等。</p>
+<h3 id="常用的检测内存泄漏的工具"><a href="#常用的检测内存泄漏的工具" class="headerlink" title="常用的检测内存泄漏的工具"></a>常用的检测内存泄漏的工具</h3><p>光凭肉眼我们其实只能找出比较明显的内存泄露点，还有许多隐藏得比较深的内存泄露。那么我们如何找到这些点呢？当然是利用工具。<br><br></p>
+<ul>
+<li><a href="https://developer.android.google.cn/studio/write/lint.html" target="_blank" rel="noopener">Android Lint</a>：Android Studio提供的代码扫描分析工具</li>
+<li><a href="https://github.com/square/leakcanary" target="_blank" rel="noopener">Leakcanary</a>： Square 公司开源的「Android 和 Java 的内存泄漏检测库」</li>
+</ul>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>在Android系统中，每个App最多能分配大约只有100-200MB的内存空间，因为内存不够，溢出而引起的程序崩溃还是不在少数。所以说，日常开发中还是要千万注意内存泄露。</p>
+
+      
+    </div>
+    
+    
+    
+
+  
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    Fxymine4ever
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://Fxy4ever.github.io/2019/03/08/Android内存泄漏/" title="Android内存泄漏">https://Fxy4ever.github.io/2019/03/08/Android内存泄漏/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/08/浅谈垃圾回收算法/" rel="next" title="浅谈垃圾回收算法">
+                <i class="fa fa-chevron-left"></i> 浅谈垃圾回收算法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div class="ds-thread" data-thread-key="2019/03/08/Android内存泄漏/"
+           data-title="Android内存泄漏" data-url="https://Fxy4ever.github.io/2019/03/08/Android内存泄漏/">
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+              <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=298 height=52 src="//music.163.com/outchain/player?type=2&id=441532&auto=0&height=32">
+                </iframe>
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+                
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+                
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://fxy.red/avatar.jpeg"
+                alt="Fxymine4ever" />
+            
+              <p class="site-author-name" itemprop="name">Fxymine4ever</p>
+              <p class="site-description motion-element" itemprop="description">从前很慢</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/fengxinyao1" target="_blank" title="GayHub">
+                      
+                        <i class="fa fa-fw fa-GayHub"></i>GayHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://fxy.red" target="_blank" title="主页">
+                      
+                        <i class="fa fa-fw fa-主页"></i>主页</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://juejin.im/user/5af32d10f265da0ba17c82e4" target="_blank" title="掘金">
+                      
+                        <i class="fa fa-fw fa-掘金"></i>掘金</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://music.163.com/#/user/home?id=83876284" target="_blank" title="网易云音乐">
+                      
+                        <i class="fa fa-fw fa-网易云音乐"></i>网易云音乐</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.cynthial.cn/" title="Cchanges" target="_blank">Cchanges</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://hosigus.com/" title="Hosigus" target="_blank">Hosigus</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://118.24.175.82/" title="leaf" target="_blank">leaf</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://k4ii.github.io" title="K4ii" target="_blank">K4ii</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://blog.mashiroc.fun/" title="人赢仓仓子" target="_blank">人赢仓仓子</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.fenghaha.com/" title="Fenghaha" target="_blank">Fenghaha</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Android内存泄漏"><span class="nav-number">1.</span> <span class="nav-text">Android内存泄漏</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#区别"><span class="nav-number">1.1.</span> <span class="nav-text">区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#储备知识"><span class="nav-number">1.2.</span> <span class="nav-text">储备知识</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#简单判断"><span class="nav-number">1.3.</span> <span class="nav-text">简单判断</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#泄漏场景"><span class="nav-number">1.4.</span> <span class="nav-text">泄漏场景</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#单例引起的内存泄漏"><span class="nav-number">1.4.1.</span> <span class="nav-text">单例引起的内存泄漏</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#集合的内存泄漏"><span class="nav-number">1.4.2.</span> <span class="nav-text">集合的内存泄漏</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#匿名内部类以及非静态内部类"><span class="nav-number">1.4.3.</span> <span class="nav-text">匿名内部类以及非静态内部类</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#匿名内部类"><span class="nav-number">1.4.3.1.</span> <span class="nav-text">匿名内部类</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#Handler泄漏"><span class="nav-number">1.4.3.1.1.</span> <span class="nav-text">Handler泄漏</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Thread泄漏"><span class="nav-number">1.4.3.1.2.</span> <span class="nav-text">Thread泄漏</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#static修饰的成员变量"><span class="nav-number">1.4.4.</span> <span class="nav-text">static修饰的成员变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Stream未关闭"><span class="nav-number">1.4.5.</span> <span class="nav-text">Stream未关闭</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#其他泄漏"><span class="nav-number">1.4.6.</span> <span class="nav-text">其他泄漏</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常用的检测内存泄漏的工具"><span class="nav-number">1.5.</span> <span class="nav-text">常用的检测内存泄漏的工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">1.6.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Fxymine4ever</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">26.3k</span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"Fxymine4ever"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/love.js"></script>
+</body>
+
+</html>
