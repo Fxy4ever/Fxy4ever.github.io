@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.jpeg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.jpeg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.jpeg?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/favicon.jpeg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="掘金翻译计划," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="原文地址：Subscriptions 101 for Android Apps 原文作者：Emilie Roberts 译文出自：掘金翻译计划 本文永久链接：https://github.com/xitu/gold-miner/blob/master/TODO1/subscriptions-101-for-android-apps.md 译者：Fxymine4ever   [译] Androi">
+<meta name="keywords" content="掘金翻译计划">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[译]Android 应用程序的订阅 101 系列视频">
+<meta property="og:url" content="https://Fxy4ever.github.io/2019/07/20/译-Android-应用程序的订阅-101-系列视频/index.html">
+<meta property="og:site_name" content="Fxymine4ever的博客">
+<meta property="og:description" content="原文地址：Subscriptions 101 for Android Apps 原文作者：Emilie Roberts 译文出自：掘金翻译计划 本文永久链接：https://github.com/xitu/gold-miner/blob/master/TODO1/subscriptions-101-for-android-apps.md 译者：Fxymine4ever   [译] Androi">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/8/6/16c65592dab2785a?w=3724&h=1076&f=png&s=236239">
+<meta property="og:updated_time" content="2019-08-30T07:14:48.952Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="[译]Android 应用程序的订阅 101 系列视频">
+<meta name="twitter:description" content="原文地址：Subscriptions 101 for Android Apps 原文作者：Emilie Roberts 译文出自：掘金翻译计划 本文永久链接：https://github.com/xitu/gold-miner/blob/master/TODO1/subscriptions-101-for-android-apps.md 译者：Fxymine4ever   [译] Androi">
+<meta name="twitter:image" content="https://user-gold-cdn.xitu.io/2019/8/6/16c65592dab2785a?w=3724&h=1076&f=png&s=236239">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Fxymine4ever'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://Fxy4ever.github.io/2019/07/20/译-Android-应用程序的订阅-101-系列视频/"/>
+
+
+
+
+
+  <title>[译]Android 应用程序的订阅 101 系列视频 | Fxymine4ever的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Fxymine4ever的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://Fxy4ever.github.io/2019/07/20/译-Android-应用程序的订阅-101-系列视频/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Fxymine4ever">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://fxy.red/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Fxymine4ever的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">[译]Android 应用程序的订阅 101 系列视频</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-20T15:13:42+08:00">
+                2019-07-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/07/20/译-Android-应用程序的订阅-101-系列视频/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/07/20/译-Android-应用程序的订阅-101-系列视频/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.6k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  5
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<ul>
+<li>原文地址：<a href="https://medium.com/androiddevelopers/subscriptions-101-for-android-apps-b7005a7e93a6" target="_blank" rel="noopener">Subscriptions 101 for Android Apps</a></li>
+<li>原文作者：<a href="https://medium.com/@emilieroberts" target="_blank" rel="noopener">Emilie Roberts</a></li>
+<li>译文出自：<a href="https://github.com/xitu/gold-miner" target="_blank" rel="noopener">掘金翻译计划</a></li>
+<li>本文永久链接：<a href="https://github.com/xitu/gold-miner/blob/master/TODO1/subscriptions-101-for-android-apps.md" target="_blank" rel="noopener">https://github.com/xitu/gold-miner/blob/master/TODO1/subscriptions-101-for-android-apps.md</a></li>
+<li>译者：<a href="https://github.com/Fxy4ever" target="_blank" rel="noopener">Fxymine4ever</a></li>
+</ul>
+</blockquote>
+<h1 id="译-Android-应用程序的订阅-101-系列视频"><a href="#译-Android-应用程序的订阅-101-系列视频" class="headerlink" title="[译] Android 应用程序的订阅 101 系列视频"></a>[译] Android 应用程序的订阅 101 系列视频</h1><p><a href="https://developer.android.com/google/play/billing/billing_subscriptions" target="_blank" rel="noopener">订阅 Google Play 结算</a>是拓展你业务极好的方法。然而，你的 Android 应用程序与后端服务器之间的协调问题可能会很棘手。</p>
+<p><img src="https://user-gold-cdn.xitu.io/2019/8/6/16c65592dab2785a?w=3724&amp;h=1076&amp;f=png&amp;s=236239" alt=""></p>
+<p><a href="https://www.youtube.com/playlist?list=PLWz5rJ2EKKc9J8ylTbNo1mnwciEyMbxZG" target="_blank" rel="noopener">订阅 101 系列视频</a>会帮助你明白如何将订阅里的所有部分组合在一起的，其包括搭建基础的服务器、<a href="https://developer.android.com/google/play/billing/realtime_developer_notifications" target="_blank" rel="noopener">实时开发人员通知</a>、<a href="https://developer.android.com/google/play/billing/billing_subscriptions#Allow-upgrade" target="_blank" rel="noopener">升级和降级</a>、<a href="https://medium.com/androiddevelopers/implementing-linkedpurchasetoken-correctly-to-prevent-duplicate-subscriptions-82dfbf7167da" target="_blank" rel="noopener">连接购买令牌</a>、<a href="https://developer.android.com/google/play/billing/billing_subscriptions#account-hold---subscription_on_hold" target="_blank" rel="noopener">宽限期</a>以及其它东西。</p>
+<h2 id="了解订阅"><a href="#了解订阅" class="headerlink" title="了解订阅"></a>了解订阅</h2><p>第一个视频概述了整个系列视频中使用到的术语以及你需要使用到的组件，它们包括：你的 Android 应用程序、你的后台服务器、<a href="https://developer.android.com/google/play/billing/billing_library_overview" target="_blank" rel="noopener">Google 应用内购买结算依赖库</a>、<a href="https://developers.google.com/android-publisher/" target="_blank" rel="noopener">Google Play 开发者 API</a> 和 <a href="https://developer.android.com/google/play/billing/realtime_developer_notifications" target="_blank" rel="noopener">Google Cloud Pub/Sub</a>。</p>
+<h2 id="订阅计费流程"><a href="#订阅计费流程" class="headerlink" title="订阅计费流程"></a>订阅计费流程</h2><p>这个视频讲述了订阅的计费流程。你可以使用 <a href="https://developer.android.com/google/play/billing/billing_library_overview" target="_blank" rel="noopener">Google 应用内购买结算依赖库</a>去<a href="https://developer.android.com/reference/com/android/billingclient/api/BillingClient#queryPurchases(java.lang.String" target="_blank" rel="noopener">检查现有的订阅</a>)以及<a href="https://developer.android.com/reference/com/android/billingclient/api/BillingClient#launchBillingFlow(android.app.Activity,%20com.android.billingclient.api.BillingFlowParams" target="_blank" rel="noopener">启动注册的计费流程</a>)。在成功购买后，你会得到<a href="https://developer.android.com/google/play/billing/billing_overview#purchase-tokens-and-order-ids" target="_blank" rel="noopener">购买令牌</a>以及<a href="https://developer.android.com/google/play/billing/billing_overview#purchase-tokens-and-order-ids" target="_blank" rel="noopener">订单 ID</a>，其分别代表着用户的权利和与 Google 的交易。你可以在后台服务器上跟踪该信息，以便正确授权你的产品或服务。</p>
+<h2 id="实时开发者通知"><a href="#实时开发者通知" class="headerlink" title="实时开发者通知"></a>实时开发者通知</h2><p><a href="https://developer.android.com/google/play/billing/realtime_developer_notifications" target="_blank" rel="noopener">实时开发者通知（Real-time Developer notification, RTDN）</a> 允许你通过 <a href="https://cloud.google.com/pubsub/docs/" target="_blank" rel="noopener">Google Cloud Pub/Sub</a> 向服务器发送通知，了解到最新的订阅状态。</p>
+<p>当你接收到了实时开发者通知后，请验证通知内的购买令牌以及使用 <a href="https://developers.google.com/android-publisher/" target="_blank" rel="noopener">Google Play 开发者 API</a> 来检索该订阅的<a href="https://developers.google.com/android-publisher/api-ref/purchases/subscriptions" target="_blank" rel="noopener">详细信息</a>。</p>
+<h2 id="升级与降级"><a href="#升级与降级" class="headerlink" title="升级与降级"></a>升级与降级</h2><p>你可以让用户在你的应用程序内使用 <a href="https://developer.android.com/google/play/billing/billing_library_overview" target="_blank" rel="noopener">Google 应用内购买结算依赖库</a>去升级或降级订阅。首先，调用 <a href="https://developer.android.com/reference/com/android/billingclient/api/BillingClient#queryPurchases(java.lang.String" target="_blank" rel="noopener">queryPurchases()</a>) 方法验证你的用户是否拥有当前订阅。然后，使用 SKU 调用 <a href="https://developer.android.com/reference/com/android/billingclient/api/BillingFlowParams.Builder.html#setOldSku(java.lang.String" target="_blank" rel="noopener">setOldSku()</a>) 方法来获取即将被替换的订阅。最后，使用新的订阅的 SKU 来调用 <a href="https://developer.android.com/reference/com/android/billingclient/api/BillingFlowParams.Builder.html#setOldSku(java.lang.String" target="_blank" rel="noopener">setSku()</a>) 方法。这将会返回代表着升级或降级的新的购买令牌。请确保正确地<a href="https://medium.com/androiddevelopers/implementing-linkedpurchasetoken-correctly-to-prevent-duplicate-subscriptions-82dfbf7167da" target="_blank" rel="noopener">处理连接购买令牌</a>。</p>
+<h2 id="宽限期"><a href="#宽限期" class="headerlink" title="宽限期"></a>宽限期</h2><p>这个视频介绍了如何为订阅设置宽限期。这将允许订阅失败的用户在短时间内修复他们的付款信息，从而帮你留住用户。</p>
+<p>在 Google Play 控制台中，启动宽限期，同时在每一个订阅的设置中选择其宽限期的时长。当在你接收到了 RTDN，它提醒你用户正处于宽限期的时候，使用 <a href="https://developers.google.com/android-publisher/" target="_blank" rel="noopener">Google Play 开发者 API</a> 验证订阅状态。然后，在你的应用程序中为用户提供通知，用户可以使用 <a href="https://developer.android.com/google/play/billing/billing_subscriptions#deep-links-manage-subs" target="_blank" rel="noopener">deep-link</a> 跳转到<a href="https://play.google.com/store/account/subscriptions" target="_blank" rel="noopener">订阅中心</a>，这使得用户能够轻松修复他们的付款设置。请记住，用户在宽限期间时应该保留其对订阅的访问权限。</p>
+<h2 id="账户保留"><a href="#账户保留" class="headerlink" title="账户保留"></a>账户保留</h2><p>这个视频介绍了<a href="https://developer.android.com/google/play/billing/billing_subscriptions#account-hold---subscription_on_hold" target="_blank" rel="noopener">账户保留</a>，这对于其付款方式有问题的用户而言是一种方法。用户可以无需重新订阅，即可恢复他们对应用内容的访问权限。这可以提高用户保留率。</p>
+<p>在 Google Play 控制台 —— 应用内产品部分 —— 订阅选项卡中，展开里面的订阅设置菜单，在所有应用的订阅里启动账户保留。在你的后端服务器中，当你收到 RTDN，它提醒你用户正处于账户保留状态时，请使用 <a href="https://developers.google.com/android-publisher/" target="_blank" rel="noopener">Google Play 开发者 API</a> 来验证订阅状态。然后，你应该阻止用户对订阅的访问，并让用户知道他们的付款方法有问题，然后提供一个 <a href="https://developer.android.com/google/play/billing/billing_subscriptions#deep-links-manage-subs" target="_blank" rel="noopener">deep-link</a> 跳转到<a href="https://play.google.com/store/account/subscriptions" target="_blank" rel="noopener">订阅中心</a>，以便他们可以很轻松地修复其支付设置。</p>
+<h2 id="取消与恢复"><a href="#取消与恢复" class="headerlink" title="取消与恢复"></a>取消与恢复</h2><p>允许用户在取消订阅后能很轻松地<a href="https://developer.android.com/google/play/billing/billing_subscriptions#restore" target="_blank" rel="noopener">恢复</a>订阅，这可以帮助你重新获得并保留以前的活跃用户。在用户已经取消了订阅后，他们将保留对你应用程序内容的访问权限，直到订阅期限到期。在这期间，他们可以轻松地在 <a href="https://play.google.com/store/account/subscriptions" target="_blank" rel="noopener">Google Play 订阅中心</a>中恢复订阅。</p>
+<p>当你收到的 RTDN，它提醒你用户取消了订阅。你可能希望在你的应用程序中礼貌地提醒用户关于即将到来的截止日期，并提供 <a href="https://developer.android.com/google/play/billing/billing_subscriptions#deep-links-manage-subs" target="_blank" rel="noopener">deep-link</a> 跳转到<a href="https://play.google.com/store/account/subscriptions" target="_blank" rel="noopener">订阅中心</a>，以便他们轻松恢复订阅。</p>
+<h2 id="推迟结算"><a href="#推迟结算" class="headerlink" title="推迟结算"></a>推迟结算</h2><p><a href="https://developer.android.com/google/play/billing/billing_subscriptions#Defer" target="_blank" rel="noopener">推迟结算日期</a>是一个简单的方法，它可以免费向用户提供临时访问权限，作为促销或者如果他们遇到了服务中断。你可以使用 <a href="https://developers.google.com/android-publisher/api-ref/purchases/subscriptions/defer" target="_blank" rel="noopener">Google Play 开发者 API</a> 用来提前用户的计费日期，以便让他们在一个指定的时间段内免费访问你的服务。然后订阅续订的日期会被调整，用来反映的新的计费日期（这个日期用于传递给 API）。</p>
+<h2 id="准备好了吗？Go！"><a href="#准备好了吗？Go！" class="headerlink" title="准备好了吗？Go！"></a>准备好了吗？Go！</h2><p>我希望这些视频会帮助你明白如何在你的应用程序里面使用订阅！准备好了吗？Go！</p>
+<h2 id="资源"><a href="#资源" class="headerlink" title="资源"></a>资源</h2><ul>
+<li><a href="https://www.youtube.com/playlist?list=PLWz5rJ2EKKc9J8ylTbNo1mnwciEyMbxZG" target="_blank" rel="noopener">订阅 101 YouTube 视频播放列表</a></li>
+<li><a href="https://developer.android.com/google/play/billing/billing_library_overview" target="_blank" rel="noopener">Google 应用内购买结算依赖库</a></li>
+<li><a href="https://developers.google.com/android-publisher/api-ref/purchases/subscriptions#resource" target="_blank" rel="noopener">订阅，购买资源</a>，来自 Google Play 开发者 API</li>
+<li>使用<a href="https://medium.com/androiddevelopers/implementing-linkedpurchasetoken-correctly-to-prevent-duplicate-subscriptions-82dfbf7167da" target="_blank" rel="noopener">连接购买令牌</a></li>
+<li><a href="https://github.com/googlesamples/android-play-billing/tree/master/ClassyTaxi" target="_blank" rel="noopener">Classy Taxi</a>，一个端对端订阅的 Demo 应用程序</li>
+</ul>
+<blockquote>
+<p>如果发现译文存在错误或其他需要改进的地方，欢迎到 <a href="https://github.com/xitu/gold-miner" target="_blank" rel="noopener">掘金翻译计划</a> 对译文进行修改并 PR，也可获得相应奖励积分。文章开头的 <strong>本文永久链接</strong> 即为本文在 GitHub 上的 MarkDown 链接。</p>
+</blockquote>
+<hr>
+<blockquote>
+<p><a href="https://github.com/xitu/gold-miner" target="_blank" rel="noopener">掘金翻译计划</a> 是一个翻译优质互联网技术文章的社区，文章来源为 <a href="https://juejin.im" target="_blank" rel="noopener">掘金</a> 上的英文分享文章。内容覆盖 <a href="https://github.com/xitu/gold-miner#android" target="_blank" rel="noopener">Android</a>、<a href="https://github.com/xitu/gold-miner#ios" target="_blank" rel="noopener">iOS</a>、<a href="https://github.com/xitu/gold-miner#前端" target="_blank" rel="noopener">前端</a>、<a href="https://github.com/xitu/gold-miner#后端" target="_blank" rel="noopener">后端</a>、<a href="https://github.com/xitu/gold-miner#区块链" target="_blank" rel="noopener">区块链</a>、<a href="https://github.com/xitu/gold-miner#产品" target="_blank" rel="noopener">产品</a>、<a href="https://github.com/xitu/gold-miner#设计" target="_blank" rel="noopener">设计</a>、<a href="https://github.com/xitu/gold-miner#人工智能" target="_blank" rel="noopener">人工智能</a>等领域，想要查看更多优质译文请持续关注 <a href="https://github.com/xitu/gold-miner" target="_blank" rel="noopener">掘金翻译计划</a>、<a href="http://weibo.com/juejinfanyi" target="_blank" rel="noopener">官方微博</a>、<a href="https://zhuanlan.zhihu.com/juejinfanyi" target="_blank" rel="noopener">知乎专栏</a>。</p>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+  
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    Fxymine4ever
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://Fxy4ever.github.io/2019/07/20/译-Android-应用程序的订阅-101-系列视频/" title="[译]Android 应用程序的订阅 101 系列视频">https://Fxy4ever.github.io/2019/07/20/译-Android-应用程序的订阅-101-系列视频/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/掘金翻译计划/" rel="tag"># 掘金翻译计划</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/19/由外到内——剖析Android消息机制/" rel="next" title="由外到内——剖析Android消息机制">
+                <i class="fa fa-chevron-left"></i> 由外到内——剖析Android消息机制
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div class="ds-thread" data-thread-key="2019/07/20/译-Android-应用程序的订阅-101-系列视频/"
+           data-title="[译]Android 应用程序的订阅 101 系列视频" data-url="https://Fxy4ever.github.io/2019/07/20/译-Android-应用程序的订阅-101-系列视频/">
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+              <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=298 height=52 src="//music.163.com/outchain/player?type=2&id=441532&auto=0&height=32">
+                </iframe>
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+                
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+                
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://fxy.red/avatar.jpeg"
+                alt="Fxymine4ever" />
+            
+              <p class="site-author-name" itemprop="name">Fxymine4ever</p>
+              <p class="site-description motion-element" itemprop="description">从前很慢</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/fengxinyao1" target="_blank" title="GayHub">
+                      
+                        <i class="fa fa-fw fa-GayHub"></i>GayHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://fxy.red" target="_blank" title="主页">
+                      
+                        <i class="fa fa-fw fa-主页"></i>主页</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://juejin.im/user/5af32d10f265da0ba17c82e4" target="_blank" title="掘金">
+                      
+                        <i class="fa fa-fw fa-掘金"></i>掘金</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://music.163.com/#/user/home?id=83876284" target="_blank" title="网易云音乐">
+                      
+                        <i class="fa fa-fw fa-网易云音乐"></i>网易云音乐</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.cynthial.cn/" title="Cchanges" target="_blank">Cchanges</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://hosigus.com/" title="Hosigus" target="_blank">Hosigus</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://118.24.175.82/" title="leaf" target="_blank">leaf</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://k4ii.github.io" title="K4ii" target="_blank">K4ii</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://blog.mashiroc.fun/" title="人赢仓仓子" target="_blank">人赢仓仓子</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.fenghaha.com/" title="Fenghaha" target="_blank">Fenghaha</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#译-Android-应用程序的订阅-101-系列视频"><span class="nav-number">1.</span> <span class="nav-text">[译] Android 应用程序的订阅 101 系列视频</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#了解订阅"><span class="nav-number">1.1.</span> <span class="nav-text">了解订阅</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#订阅计费流程"><span class="nav-number">1.2.</span> <span class="nav-text">订阅计费流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实时开发者通知"><span class="nav-number">1.3.</span> <span class="nav-text">实时开发者通知</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#升级与降级"><span class="nav-number">1.4.</span> <span class="nav-text">升级与降级</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#宽限期"><span class="nav-number">1.5.</span> <span class="nav-text">宽限期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#账户保留"><span class="nav-number">1.6.</span> <span class="nav-text">账户保留</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#取消与恢复"><span class="nav-number">1.7.</span> <span class="nav-text">取消与恢复</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#推迟结算"><span class="nav-number">1.8.</span> <span class="nav-text">推迟结算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#准备好了吗？Go！"><span class="nav-number">1.9.</span> <span class="nav-text">准备好了吗？Go！</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#资源"><span class="nav-number">1.10.</span> <span class="nav-text">资源</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Fxymine4ever</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">26k</span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"Fxymine4ever"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  <!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/love.js"></script>
+</body>
+
+</html>
